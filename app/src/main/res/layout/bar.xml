@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="75dp">
+
+    <ImageButton
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:id="@+id/pause"
+        android:layout_weight="6"
+        android:background="@drawable/butt_selt_pause" />
+
+    <LinearLayout
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+
+            android:id="@+id/progressBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:progressDrawable="@drawable/sda"
+            android:max="100" />
+
+        <Chronometer
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/chron"
+            android:layout_gravity="center_horizontal"
+            android:textSize="30dp" />
+    </LinearLayout>
+
+
+    <ImageButton
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:id="@+id/catchdrinc"
+        android:layout_weight="6"
+        android:background="@drawable/butt_selt_arm" />
+
+</LinearLayout>

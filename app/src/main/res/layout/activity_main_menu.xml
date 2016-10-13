@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="com.example.kolas.mygame.MainMenu"
+    android:orientation="vertical"
+    android:gravity="center_vertical|center_horizontal"
+    android:background="@drawable/fon">
+
+    <TableLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"></TableLayout>
+
+    <Button
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Грати"
+
+        android:id="@+id/button"
+        android:onClick="onClick"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/butt_selt"
+        android:layout_marginBottom="5dp" />
+
+    <Button
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Налаштування"
+        android:id="@+id/button2"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/butt_selt"
+        android:layout_marginBottom="5dp" />
+
+    <Button
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="про програму"
+        android:id="@+id/button3"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/butt_selt"
+        android:layout_marginBottom="5dp" />
+
+    <Button
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="вихід"
+        android:id="@+id/button4"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/butt_selt"
+        android:layout_marginBottom="5dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"></RelativeLayout>
+</LinearLayout>
