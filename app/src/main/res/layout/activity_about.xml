@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.example.kolas.mygame.AboutActivity"
+    tools:context="com.game.kolas.mygame.AboutActivity"
     android:orientation="vertical">
     <TextView android:text="Гра ''Стирити ворота''"
         android:layout_width="wrap_content"
