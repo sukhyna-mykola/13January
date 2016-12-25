@@ -49,7 +49,7 @@ public class MainMenu extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button:
-                intent = new Intent(this, MainActivity.class);
+                intent = new Intent(this, LevelActivity.class);
                 startActivity(intent);
                 finish();
                 break;

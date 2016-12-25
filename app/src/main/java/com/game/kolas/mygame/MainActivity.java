@@ -29,8 +29,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     DialogFragment endDialog;
     MediaPlayer mPlayer;
     DialogFragment pauseDialog;
-    private static final String MY_SETTINGS = "my_settings";
-    final String SAVED_TEXT = "saved_text";
+    public static final String MY_SETTINGS = "my_settings";
     final String CHECK = "sound";
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -46,7 +45,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mPlayer = MediaPlayer.create(this, R.raw.pogon);
         if (sPref.getBoolean(CHECK, true))
             mPlayer.start();
-
         LayoutInflater layoutInflater = getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.bar, null);
         view.findViewById(R.id.pause).setOnClickListener(this);
@@ -59,7 +57,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //load
 
 
-        BestTime = sPref.getString(SAVED_TEXT, "");
+        BestTime = DataGame.levels.get(LevelActivity.LEVEL).getBestTime();
         game.addView(gameView);
         game.addView(view);
 
@@ -76,8 +74,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onClick(View v) {
         gameView.pause();
-
-
         pauseDialog.show(getFragmentManager(), "bhs");
 
     }
@@ -103,7 +99,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         void setThistime(TextView textView) {
-
             textView.setText("Ваш час - " + time);
         }
 
@@ -138,8 +133,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             v = inflater.inflate(R.layout.endgame, null);
 
-
-            //  Toast.makeText(this, "Text saved", Toast.LENGTH_SHORT).show();
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
             v.findViewById(R.id.newgameE).setOnClickListener(this);
             v.findViewById(R.id.mainmenuE).setOnClickListener(this);
@@ -152,10 +145,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         void setBestime(TextView textView) {
             textView.setText("Кращий час - " + BestTime);
-            SharedPreferences.Editor ed = sPref.edit();
-
-            ed.putString(SAVED_TEXT, BestTime);
-            ed.commit();
         }
 
         void setThistime(TextView textView) {

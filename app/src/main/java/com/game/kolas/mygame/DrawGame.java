@@ -8,14 +8,33 @@ import android.view.SurfaceHolder;
  * Created by kolas on 07.11.2015.
  */
 public class DrawGame extends Thread {
-    private boolean runFlag = false;
+    private boolean runFlag;
+    private  boolean pause;
     private SurfaceHolder surfaceHolder;
-    private Bitmap picture;
     public static Canvas canvas;
-    GamePanel gamePanel;
-    boolean pause;
+    private GamePanel gamePanel;
 
-    private long prevTime;
+
+    public boolean isRunFlag() {
+        return runFlag;
+    }
+
+    public void setRunFlag(boolean runFlag) {
+        this.runFlag = runFlag;
+    }
+
+    public boolean isPause() {
+        return pause;
+    }
+
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
+
+
+
+
+
 
     public DrawGame(SurfaceHolder surfaceHolder, GamePanel gamePanel) {
         super();

@@ -2,13 +2,13 @@ package com.game.kolas.mygame;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.SystemClock;
-import android.support.v7.app.NotificationCompat;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -57,10 +57,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     Chronometer chr;
     Player vrag;
 
+
     float time;
     MainActivity ma;
 
-    public GamePanel(Context context, Chronometer c, ProgressBar progressBar, MainActivity mainActivity, ImageButton imageButton) {
+    public GamePanel(Context context, Chronometer c, ProgressBar progressBar,
+                     MainActivity mainActivity, ImageButton imageButton) {
 
         super(context);
 
@@ -94,10 +96,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     void start() {
-        if (thread.pause) {
+        if (thread.isPause()) {
             player.pause = false;
             vrag.pause = false;
-            thread.pause = false;
+            thread.setPause(false);
             chr.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
             chr.start();
         }
@@ -105,9 +107,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
     void pause() {
-        if (!thread.pause) {
+        if (!thread.isPause()) {
             ma.time = String.valueOf(chr.getText());
-            thread.pause = true;
+            thread.setPause(true);
             player.pause = true;
             vrag.pause = true;
             chr.stop();
@@ -125,7 +127,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         player = new Player(decodeResource(getResources(), R.drawable.running), 175, 200, 4);
         vrag = new Player(decodeResource(getResources(), R.drawable.vrag), 200, 200, 4);
-        ArrayList<Bitmap> listImages =new ArrayList<>();
+        ArrayList<Bitmap> listImages = new ArrayList<>();
         listImages.add(decodeResource(getResources(), R.drawable.fon));
         listImages.add(decodeResource(getResources(), R.drawable.fon_start));
         bg = new Background(listImages);
@@ -139,6 +141,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         chr.start();
 
 
+    }
+
+    public static int StringToInt(String s) {
+        int res = 0;
+        String[] list = s.split(":");
+        for (int i = list.length-1; i >=0; i--) {
+            res=  (res+((int)Math.pow(60,i)*Integer.parseInt(list[i])));
+
+        }
+
+        return res;
     }
 
     @Override
@@ -196,7 +209,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             missiles.add(new Box(decodeResource(getResources(), R.drawable.per), BoxSpeed, false));
             missileStartTime = (float) r.nextInt(800);
-            
+
         } else if ((missiles.get(missiles.size() - 1).BadOrGood)) {
             if (missiles.get(missiles.size() - 2).getX() < missileStartTime) {
                 missiles.add(new Box(decodeResource(getResources(), R.drawable.per), BoxSpeed, false));
@@ -248,10 +261,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         bg.update();
     }
 
-    int StringToInt(String s) {
-        int i = Integer.parseInt(s.replace(':', '0'));
-        return i;
-    }
+
 
     public boolean MacroCollision(GameObject player, GameObject boxObj) {
         boolean XColl = false;
@@ -365,33 +375,34 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         final float scaleFactorX = getWidth() / (WIDTH * 1.f);
         final float scaleFactorY = getHeight() / (HEIGHT * 1.f);
 
-        if (canvas != null) {
-            final int savedState = canvas.save();
-            canvas.scale(scaleFactorX, scaleFactorY);
 
-            bg.draw(canvas);
+        if (canvas != null) {
+            canvas.scale(scaleFactorX, scaleFactorY);
+            if (StringToInt(String.valueOf(chr.getText())) > (LevelActivity.LEVEL + 1) * 10000)
+
+                bg.draw(canvas);
             player.draw(canvas);
             vrag.draw(canvas);
 
             for (Box m : missiles) {
                 m.draw(canvas);
             }
+
+
             switch (nexdialog) {
                 case 0:
                     if (showdialogvrag) {
                         canvas.drawBitmap(decodeResource(getResources(), R.drawable.padl), 100, 500, p);
                     }
-                    if (showdialogplayer) { // canvas.drawText("пішов нахуй",600,500,p);
+                    if (showdialogplayer) {
                         canvas.drawBitmap(decodeResource(getResources(), R.drawable.nax), 600, 500, p);
                     }
                     break;
                 case 1:
                     if (showdialogvrag) {
-                        //  canvas.drawText("щас поліцію визву",100,500,p);
                         canvas.drawBitmap(decodeResource(getResources(), R.drawable.police), 100, 500, p);
                     }
                     if (showdialogplayer) {
-                        //  canvas.drawText("та мені похуй",600,500,p);
                         canvas.drawBitmap(decodeResource(getResources(), R.drawable.pox), 600, 500, p);
                     }
                     ;
@@ -405,7 +416,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             if (showbla) {
                 canvas.drawBitmap(decodeResource(getResources(), R.drawable.pizd), 100, 500, p);
             }
-            canvas.restoreToCount(savedState);
 
 
         }
