@@ -1,6 +1,5 @@
 package com.game.kolas.mygame;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
@@ -9,18 +8,15 @@ import android.view.SurfaceHolder;
  */
 public class DrawGame extends Thread {
     private boolean runFlag;
-    private  boolean pause;
-    private SurfaceHolder surfaceHolder;
-    public static Canvas canvas;
-    private GamePanel gamePanel;
+    private boolean pause;
+    public static int FSP = 16;
+
+    private GameActivity gameActivity;
 
 
-    public boolean isRunFlag() {
-        return runFlag;
-    }
-
-    public void setRunFlag(boolean runFlag) {
-        this.runFlag = runFlag;
+    public DrawGame(GameActivity gameActivity) {
+        super();
+        this.gameActivity = gameActivity;
     }
 
     public boolean isPause() {
@@ -31,17 +27,6 @@ public class DrawGame extends Thread {
         this.pause = pause;
     }
 
-
-
-
-
-
-    public DrawGame(SurfaceHolder surfaceHolder, GamePanel gamePanel) {
-        super();
-        this.surfaceHolder = surfaceHolder;
-        this.gamePanel = gamePanel;
-    }
-
     public void setRunning(boolean run) {
         runFlag = run;
     }
@@ -49,38 +34,18 @@ public class DrawGame extends Thread {
     @Override
     public void run() {
 
-
         while (runFlag) {
-            gamePanel.time += 0.5;//0.175666;
             while (pause)
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            canvas = null;
+
+            gameActivity.update();
 
             try {
-                canvas = this.surfaceHolder.lockCanvas();
-                synchronized (surfaceHolder) {
-
-                    this.gamePanel.update();
-                    this.gamePanel.draw(canvas);
-                }
-            } catch (Exception e) {
-            } finally {
-                if (canvas != null) {
-                    try {
-                        surfaceHolder.unlockCanvasAndPost(canvas);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-
-            try {
-                this.sleep(gamePanel.FSP);
+                this.sleep(FSP);
             } catch (Exception e) {
             }
 

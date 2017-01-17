@@ -16,9 +16,9 @@ import static com.game.kolas.mygame.DBHelper.ID_KEY;
 import static com.game.kolas.mygame.DBHelper.LEVEL_TABLE;
 import static com.game.kolas.mygame.DBHelper.OPEN_KEY;
 import static com.game.kolas.mygame.DataGame.levels;
-import static com.game.kolas.mygame.MainActivity.MY_SETTINGS;
+import static com.game.kolas.mygame.GameActivity.MY_SETTINGS;
 
-public class BeginGame extends Activity {
+public class StartActivity extends Activity {
     private SharedPreferences sPref;
     public static final String IS_CREATED_BD = "is_created_DB1";
 
@@ -29,7 +29,7 @@ public class BeginGame extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin_game);
-        final Intent intent = new Intent(this, MainMenu.class);
+        final Intent intent = new Intent(this, MenuActivity.class);
         sPref = getSharedPreferences(MY_SETTINGS,
                 Context.MODE_PRIVATE);
         if (!checkIsCreatedBD()) {

@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 
-public class Setting extends Activity implements View.OnClickListener {
+public class SettingActivity extends Activity implements View.OnClickListener {
     private static final String MY_SETTINGS = "my_settings";
     SharedPreferences sPref;
     final String SAVED_TEXT = "saved_text";

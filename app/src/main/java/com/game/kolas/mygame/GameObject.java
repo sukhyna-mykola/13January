@@ -1,7 +1,7 @@
 package com.game.kolas.mygame;
 
 /**
- * Created by ������ on 26.09.2015.
+ * Created by mykola on 26.09.2015.
  */
 
 public abstract class GameObject {

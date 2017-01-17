@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainMenu extends Activity implements View.OnClickListener {
+public class MenuActivity extends Activity implements View.OnClickListener {
     Intent intent;
     private static final String MY_SETTINGS = "my_settings";
     final String CHECK = "sound";
@@ -54,9 +54,9 @@ public class MainMenu extends Activity implements View.OnClickListener {
                 finish();
                 break;
             case R.id.button2:
-                Intent intent = new Intent(this, Setting.class);
+                Intent intent = new Intent(this, SettingActivity.class);
                 startActivity(intent);
-                // Toast.makeText(MainMenu.this, "На стадії розробки", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(MenuActivity.this, "На стадії розробки", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button3:
                 intent = new Intent(this, AboutActivity.class);

@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="75dp">
-
-    <ImageButton
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:id="@+id/pause"
-        android:layout_weight="6"
-        android:background="@drawable/butt_selt_pause" />
+        android:layout_height="@dimen/bar_height">
 
-    <LinearLayout
-        android:layout_weight="2"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <ImageButton
+            android:id="@+id/pause"
+            android:layout_width="@dimen/bar_height"
+            android:layout_height="@dimen/bar_height"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/butt_selt_pause" />
 
-        <ProgressBar
+        <ImageButton
+            android:id="@+id/catch_bootle"
+            android:layout_width="@dimen/bar_height"
+            android:layout_height="@dimen/bar_height"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/butt_selt_arm" />
 
-            android:id="@+id/progressBar"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:progressDrawable="@drawable/sda"
-            android:max="100" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bar_height"
+            android:layout_toLeftOf="@+id/catch_bootle"
+            android:layout_toRightOf="@+id/pause"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <Chronometer
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:max="100"
+                android:progressDrawable="@drawable/sda" />
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/chron"
-            android:layout_gravity="center_horizontal"
-            android:textSize="30dp" />
-    </LinearLayout>
+            <Chronometer
+                android:id="@+id/timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="30dp" />
+        </LinearLayout>
 
 
-    <ImageButton
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:id="@+id/catchdrinc"
-        android:layout_weight="6"
-        android:background="@drawable/butt_selt_arm" />
-
-</LinearLayout>
+    </RelativeLayout>

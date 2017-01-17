@@ -13,10 +13,10 @@ public class DataGame {
  public  static ArrayList<Level>  levels = new ArrayList<>();
 
     static {
-        levels.add(new Level(0,true,"Просто",R.drawable.arm,""));
-        levels.add(new Level(1,true,"Середня скланість",R.drawable.arm_yes,""));
-        levels.add(new Level(2,false,"Важко",R.drawable.but,""));
-        levels.add(new Level(3,false,"Важко",R.drawable.but," "));
+        levels.add(new Level(0,true,"Просто",R.drawable.arm,"00:00"));
+        levels.add(new Level(1,true,"Середня скланість",R.drawable.arm_yes,"00:00"));
+        levels.add(new Level(2,false,"Важко",R.drawable.but,"00:00"));
+        levels.add(new Level(3,false,"Важко",R.drawable.but,"00:00"));
     }
 
 

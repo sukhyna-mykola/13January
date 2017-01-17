@@ -18,7 +18,7 @@ public class Background {
         images  = new Bitmap[listBackgroundImages.size()];
         listBackgroundImages.toArray(images);
         max = listBackgroundImages.size();
-        dx = GamePanel.MOVESPEED;
+        dx = GameSurface.MOVESPEED;
     }
 
 

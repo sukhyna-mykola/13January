@@ -30,7 +30,7 @@ public class Box extends GameObject {
         image = res;
         super.x = x;
         super.y = y;
-//
+
         if (BadOrGood == false) {
             y = (710);
             x = 1000;
