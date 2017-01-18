@@ -5,13 +5,14 @@ package com.game.kolas.mygame;
  */
 
 public abstract class GameObject {
-    protected int x;
-    protected int y;
-    protected int dy;
-    protected int dx;
+    public static final int MIN_Y_POSITION = 10;
+    protected float x;
+    protected float y;
+    protected float dy;
+    protected float dx;
     protected int width;
     protected int height;
-    protected boolean BadOrGood;
+    protected boolean isBonus;
 
     public void setX(int  x)
     {
@@ -21,14 +22,23 @@ public abstract class GameObject {
     {
         this.y = y;
     }
-    public int getX()
-    {
+
+    public float getX() {
         return x;
     }
-    public int getY()
-    {
+
+    public float getY() {
         return y;
     }
+
+    public float getDy() {
+        return dy;
+    }
+
+    public float getDx() {
+        return dx;
+    }
+
     public int getHeight()
     {
         return height;

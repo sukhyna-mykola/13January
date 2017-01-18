@@ -14,12 +14,11 @@ import static android.graphics.BitmapFactory.decodeResource;
  */
 
 public class GameModel {
-    private ArrayList<Box> missiles;
+    private ArrayList<Obstacle> obstacles;
     private Background bg;
     private Player player;
-    private Player vrag;
+    private Player adversary;
 
-    private int progress;
 
     private int gameStatus;
     Random r = new Random();
@@ -72,7 +71,7 @@ public class GameModel {
     long realTime = SystemClock.elapsedRealtime();
     long realTimeForGoodBox = SystemClock.elapsedRealtime();
     long realTimeForBar = SystemClock.elapsedRealtime();
-    private float missileStartTime = (float) r.nextInt(700);
+    private float obstacleStartTime = (float) r.nextInt(700);
 
     private Resources resources;
 
@@ -80,8 +79,8 @@ public class GameModel {
 
     private float newGoodBox = 10000;
 
-    public ArrayList<Box> getMissiles() {
-        return missiles;
+    public ArrayList<Obstacle> getObstacles() {
+        return obstacles;
     }
 
     public Background getBg() {
@@ -92,28 +91,26 @@ public class GameModel {
         return player;
     }
 
-    public Player getVrag() {
-        return vrag;
+    public Player getAdversary() {
+        return adversary;
     }
 
     public int getProgress() {
-        return progress;
+        return player.getEnergy();
     }
 
     public GameModel(Resources resources) {
         this.resources = resources;
         player = new Player(decodeResource(resources, R.drawable.running), 175, 200, 4);
-        vrag = new Player(decodeResource(resources, R.drawable.vrag), 200, 200, 4);
+        adversary = new Player(decodeResource(resources, R.drawable.adversary), 200, 200, 4);
         ArrayList<Bitmap> listImages = new ArrayList<>();
         listImages.add(decodeResource(resources, R.drawable.fon));
         listImages.add(decodeResource(resources, R.drawable.fon_start));
         bg = new Background(listImages);
-        progress = 100;
-        vrag.setX(0);
+        adversary.setX(0);
         player.setX(200);
-        missiles = new ArrayList<Box>();
+        obstacles = new ArrayList<Obstacle>();
         gameStatus = STATUS_GAMING;
-
 
     }
 
@@ -127,7 +124,7 @@ public class GameModel {
         long thisTimeForBar = SystemClock.elapsedRealtime() - realTimeForBar;
 
         if (thisTimeForBar > 1000) {
-            progress = progress - 2;
+            player.changeEnergy(-2);
             realTimeForBar = SystemClock.elapsedRealtime();
         }
 
@@ -142,17 +139,17 @@ public class GameModel {
         }
 
 
-        if (missiles.size() == 0) {
-            missiles.add(new Box(decodeResource(resources, R.drawable.per), BoxSpeed, false));
-        } else if (missiles.get(missiles.size() - 1).getX() < missileStartTime) {
+        if (obstacles.size() == 0) {
+            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.per), BoxSpeed, false));
+        } else if (obstacles.get(obstacles.size() - 1).getX() < obstacleStartTime) {
 
-            missiles.add(new Box(decodeResource(resources, R.drawable.per), BoxSpeed, false));
-            missileStartTime = (float) r.nextInt(800);
+            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.per), BoxSpeed, false));
+            obstacleStartTime = (float) r.nextInt(800);
 
-        } else if ((missiles.get(missiles.size() - 1).BadOrGood)) {
-            if (missiles.get(missiles.size() - 2).getX() < missileStartTime) {
-                missiles.add(new Box(decodeResource(resources, R.drawable.per), BoxSpeed, false));
-                missileStartTime = (float) r.nextInt(800);
+        } else if ((obstacles.get(obstacles.size() - 1).isBonus)) {
+            if (obstacles.get(obstacles.size() - 2).getX() < obstacleStartTime) {
+                obstacles.add(new Obstacle(decodeResource(resources, R.drawable.per), BoxSpeed, false));
+                obstacleStartTime = (float) r.nextInt(800);
             }
         }
 
@@ -160,56 +157,56 @@ public class GameModel {
         long thisTimeForGoodBox = SystemClock.elapsedRealtime() - realTimeForGoodBox;
 
         if (thisTimeForGoodBox > newGoodBox) {
-            missiles.add(new Box(decodeResource(resources, R.drawable.but), 5, true));
-            if (progress < 30)
+            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.but), 5, true));
+            if (player.getEnergy() < 30)
                 newGoodBox = 30 * 100;
             else
-                newGoodBox = progress * 100;
+                newGoodBox = player.getEnergy() * 100;
             realTimeForGoodBox = SystemClock.elapsedRealtime();
         }
 
 
-        for (int i = 0; i < missiles.size(); i++) {
-            //update missile
-            missiles.get(i).update();
-            if (MacroCollision(player, missiles.get(i))) {
-                missiles.remove(i);
+        for (int i = 0; i < obstacles.size(); i++) {
+            //update obstacle
+            obstacles.get(i).update();
+            if (MacroCollision(player, obstacles.get(i))) {
+                obstacles.remove(i);
                 gameStatus = STATUS_END;
-
                 break;
 
             }
-            if (missiles.get(i).x < -50)
-                missiles.remove(i);
+            if (obstacles.get(i).x < -50)
+                obstacles.remove(i);
 
 
         }
 
-        if (progress <= 0) {
+        if (player.getEnergy() <= 0) {
             gameStatus = STATUS_END;
 
         }
         player.update();
-        vrag.update();
+        adversary.update();
         bg.update();
     }
 
-    public boolean MacroCollision(GameObject player, GameObject boxObj) {
+    public boolean MacroCollision(final GameObject playerObj, GameObject boxObj) {
         boolean XColl = false;
         boolean YColl = false;
-        if (!boxObj.BadOrGood) {
-            if ((player.getX() + 130 >= boxObj.getX()) && (player.getX() + 50 <= boxObj.getX() + 50))
+        //Зміна метода через зміну системи координат
+        if (!boxObj.isBonus) {
+            if ((playerObj.getX() + 130 >= boxObj.getX()) && (playerObj.getX() + 50 <= boxObj.getX() + 50))
                 XColl = true;
-            if ((player.getY() + 200 >= boxObj.getY()) && (player.getY() <= boxObj.getY() + 30))
+            if ((playerObj.getY() -playerObj.getHeight() <= boxObj.getY()) && (playerObj.getY() >= boxObj.getY() - 30))
                 YColl = true;
         } else {
-            if ((player.getX() + 140 >= boxObj.getX()) && (player.getX() + 20 <= boxObj.getX() + 100))
+            if ((playerObj.getX() + 140 >= boxObj.getX()) && (playerObj.getX() + 20 <= boxObj.getX() + 100))
                 XColl = true;
-            if ((player.getY() + 200 >= boxObj.getY()) && (player.getY() <= boxObj.getY() + 100))
+            if ((playerObj.getY() - playerObj.getHeight() <= boxObj.getY()) && (playerObj.getY() >= boxObj.getY() - 100))
                 YColl = true;
         }
         if ((XColl & YColl)) {
-            if (!boxObj.BadOrGood) {
+            if (!boxObj.isBonus) {
                 gameStatus = STATUS_END;
                 return true;
             } else if (catchJamp) {
@@ -221,7 +218,7 @@ public class GameModel {
                         for (int i = 0; i < 10; i++) {
                             try {
                                 Thread.sleep(16);
-                                progress++;
+                                player.changeEnergy(1);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -231,7 +228,7 @@ public class GameModel {
                     }
                 });
                 thread.start();
-                missiles.remove(boxObj);
+                obstacles.remove(boxObj);
                 ;
                 return false;
             }

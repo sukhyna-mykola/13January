@@ -91,9 +91,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
             model.getBg().draw(canvas);
             model.getPlayer().draw(canvas);
-            model.getVrag().draw(canvas);
+            model.getAdversary().draw(canvas);
 
-            for (Box m : model.getMissiles()) {
+            for (Obstacle m : model.getObstacles()) {
                 m.draw(canvas);
             }
 //           if (SystemClock.elapsedRealtime() - chr.getBase() > (LevelActivity.LEVEL + 1) * 5000)

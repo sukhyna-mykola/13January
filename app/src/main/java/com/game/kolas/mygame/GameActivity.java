@@ -156,7 +156,7 @@ public class GameActivity extends Activity implements View.OnClickListener, View
     private void start() {
         if (thread.isPause()) {
             model.getPlayer().pause = false;
-            model.getVrag().pause = false;
+            model.getAdversary().pause = false;
             thread.setPause(false);
             chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
             chronometer.start();
@@ -169,7 +169,7 @@ public class GameActivity extends Activity implements View.OnClickListener, View
             time = String.valueOf(chronometer.getText());
             thread.setPause(true);
             model.getPlayer().pause = true;
-            model.getVrag().pause = true;
+            model.getAdversary().pause = true;
             chronometer.stop();
             timeWhenStopped = chronometer.getBase() - SystemClock.elapsedRealtime();
         }
@@ -191,9 +191,9 @@ public class GameActivity extends Activity implements View.OnClickListener, View
 
     private void jump() {
         try {
-
-            if (model.getPlayer().getY() > 520) {
-                model.getPlayer().setY(542);
+            //умова для попередження безкінечного стрибка
+            if (model.getPlayer().getY() < model.getPlayer().getHeight()+30) {
+                model.getPlayer().setY(model.getPlayer().getHeight()+10);
                 model.getPlayer().jamp();
             }
         } catch (InterruptedException e) {

@@ -6,82 +6,71 @@ package com.game.kolas.mygame;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
+
+import static android.content.ContentValues.TAG;
+import static com.game.kolas.mygame.DrawGame.FSP;
+import static com.game.kolas.mygame.GameSurface.HEIGHT;
 
 
 public class Player extends GameObject {
-    private Bitmap spritesheet;
-    private int score;
-    private int PlayerJampFSP = 11;
-    boolean startJamp = true;
-    private boolean up;
-    private boolean playing;
+
+    public static final float DY_JUMP = (float) 0.6;
+    private float heightJump = 144;
+
     boolean pause = false;
+
     private Animation animation = new Animation();
-    Bitmap bitmap;
-    private long startTime;
+    private Bitmap spritesheet;
 
+    private int energy;
 
-    public Player(Bitmap res) {
-        bitmap = res;
-        x = 100;
-        y = 542;
-        height = 200;
-        width = 179;
-        dy = 0;
-        score = 0;
-        up = false;
-
-    }
 
     public Player(Bitmap res, int w, int h, int numFrames) {
 
-        x = 100;
-        y = 542;
-        dy = 0;
-        score = 0;
-        height = h;
-        width = w;
-        up = true;
-        Bitmap[] image = new Bitmap[numFrames];
-        spritesheet = res;
+        this.x = 100;
+        this.y = h + MIN_Y_POSITION;
+        this.height = h;
+        this.width = w;
+        this.energy = 100;
 
+        Bitmap[] image = new Bitmap[numFrames];
+        this.spritesheet = res;
         for (int i = 0; i < image.length; i++) {
             image[i] = Bitmap.createBitmap(spritesheet, i * width, 0, width, height);
         }
-
         animation.setFrames(image);
         animation.setDelay(40);
-        startTime = System.nanoTime();
-
     }
 
-    public void setUp(boolean b) {
-        up = b;
-    }
 
     public void jamp() throws InterruptedException {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 animation.setPause(true);
-                float dyu = -12;
-                // up=false;
-                while (y <= 542) {
+                float dy = (float) -Math.sqrt(heightJump);
 
+                while (y >= height + MIN_Y_POSITION) {
+                    dy += DY_JUMP;
+                    Log.d(TAG, "y = " + y);
                     while (pause)
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    y = (int) (Math.pow(dyu, 2)) + 542 - 12 * 12;
-                    dyu += 0.35;
+                    //-Math.sqrt(heightJump)<dy<Math.sqrt(heightJump), де heightJump - висота стрибка
+                    //графік - парабола
+                    y = (height + MIN_Y_POSITION) + heightJump - (int) (Math.pow(dy, 2));
+
                     try {
-                        Thread.sleep(PlayerJampFSP);
+                        Thread.sleep(FSP);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                y = (height + MIN_Y_POSITION);
                 animation.setPause(false);
             }
         });
@@ -90,12 +79,21 @@ public class Player extends GameObject {
 
     }
 
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void changeEnergy(int inc) {
+        this.energy += inc;
+    }
+
     public void update() {
         animation.update();
     }
 
+
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(animation.getImage(), x, y, null);
+        canvas.drawBitmap(animation.getImage(), x, HEIGHT - y, null);
     }
 
 }
