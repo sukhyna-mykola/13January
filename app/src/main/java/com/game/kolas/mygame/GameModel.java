@@ -4,6 +4,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
 
+import com.game.kolas.mygame.level.Snowball;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -15,16 +17,15 @@ import static android.graphics.BitmapFactory.decodeResource;
 
 public class GameModel {
     private ArrayList<Obstacle> obstacles;
+    private ArrayList<Snowball> snowballs;
     private Background bg;
     private Player player;
     private Player adversary;
 
 
     private int gameStatus;
+    private int countSnowbolls;
     Random r = new Random();
-
-    float x_sn = 500;
-    float y_sn = 100;
 
 
     public static final int STATUS_GAMING = 0;
@@ -99,6 +100,10 @@ public class GameModel {
         return player.getEnergy();
     }
 
+    public ArrayList<Snowball> getSnowballs() {
+        return snowballs;
+    }
+
     public GameModel(Resources resources) {
         this.resources = resources;
         player = new Player(decodeResource(resources, R.drawable.running), 175, 200, 4);
@@ -110,6 +115,8 @@ public class GameModel {
         adversary.setX(0);
         player.setX(200);
         obstacles = new ArrayList<Obstacle>();
+        snowballs = new ArrayList<>();
+
         gameStatus = STATUS_GAMING;
 
     }
@@ -119,6 +126,7 @@ public class GameModel {
     }
 
     public void update() {
+
         if (player.getX() < 400)
             player.x++;
         long thisTimeForBar = SystemClock.elapsedRealtime() - realTimeForBar;
@@ -183,21 +191,25 @@ public class GameModel {
 
         if (player.getEnergy() <= 0) {
             gameStatus = STATUS_END;
-
         }
+
         player.update();
         adversary.update();
         bg.update();
     }
 
-    public boolean MacroCollision(final GameObject playerObj, GameObject boxObj) {
+    public int getCountSnowbolls() {
+        return countSnowbolls;
+    }
+
+    private boolean MacroCollision(final GameObject playerObj, GameObject boxObj) {
         boolean XColl = false;
         boolean YColl = false;
         //Зміна метода через зміну системи координат
         if (!boxObj.isBonus) {
             if ((playerObj.getX() + 130 >= boxObj.getX()) && (playerObj.getX() + 50 <= boxObj.getX() + 50))
                 XColl = true;
-            if ((playerObj.getY() -playerObj.getHeight() <= boxObj.getY()) && (playerObj.getY() >= boxObj.getY() - 30))
+            if ((playerObj.getY() - playerObj.getHeight() <= boxObj.getY()) && (playerObj.getY() >= boxObj.getY() - 30))
                 YColl = true;
         } else {
             if ((playerObj.getX() + 140 >= boxObj.getX()) && (playerObj.getX() + 20 <= boxObj.getX() + 100))
@@ -210,8 +222,14 @@ public class GameModel {
                 gameStatus = STATUS_END;
                 return true;
             } else if (catchJamp) {
-                if (r.nextBoolean())
-                    flybox();
+                {
+                    int count = r.nextInt(10);
+                    for (int i = 0; i < count; i++) {
+                        snowballs.add(new Snowball());
+                    }
+                    countSnowbolls = snowballs.size();
+
+                }
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -238,7 +256,7 @@ public class GameModel {
         return false;
     }
 
-    void dialog() {
+    private void dialog() {
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -263,15 +281,27 @@ public class GameModel {
         nexdialog = r.nextInt(2);
     }
 
-    void flybox() {
+
+    public void throwSnowball(final Snowball snowball) {
+        countSnowbolls--;
         show_sn = true;
+        //100 - тут координа суперника
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (x_sn > 100) {
 
-                    x_sn -= 1;
-                    y_sn = 500 + (((float) 0.0075) * (x_sn - 300) * (x_sn - 300) - 300);
+                snowball.setX((player.getX() + player.getWidth()));
+                float x_adversary = 100;
+                float y = player.getY() - 40;
+                float center = (snowball.getX() - x_adversary - 10) / 2;
+                float shift = (snowball.getX() + x_adversary - 10) / 2;
+                float k = (float) (1 / Math.pow((center), 2));
+
+
+                while (snowball.getX() > x_adversary) {
+
+                    snowball.setX((float) (snowball.getX() - (2.5 - snowball.getAngle() )));
+                    snowball.setY((float) (y + snowball.getAngle() * 200 * (1 - Math.pow((snowball.getX() - shift), 2) * k)));
 
                     try {
                         Thread.sleep(5);
@@ -279,8 +309,11 @@ public class GameModel {
                         e.printStackTrace();
                     }
                 }
-                x_sn = 500;
-                show_sn = false;
+                adversary.changeEnergy(LevelActivity.LEVEL*2-10);
+                snowballs.remove(snowball);
+                if (snowballs.size() == 0)
+                    show_sn = false;
+
                 showdialogplayer = false;
                 showdialogvrag = false;
                 showbla = true;

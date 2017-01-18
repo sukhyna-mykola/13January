@@ -6,6 +6,8 @@ package com.game.kolas.mygame;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 
 import static android.content.ContentValues.TAG;
@@ -28,7 +30,6 @@ public class Player extends GameObject {
 
     public Player(Bitmap res, int w, int h, int numFrames) {
 
-        this.x = 100;
         this.y = h + MIN_Y_POSITION;
         this.height = h;
         this.width = w;
@@ -94,6 +95,7 @@ public class Player extends GameObject {
 
     public void draw(Canvas canvas) {
         canvas.drawBitmap(animation.getImage(), x, HEIGHT - y, null);
+
     }
 
 }

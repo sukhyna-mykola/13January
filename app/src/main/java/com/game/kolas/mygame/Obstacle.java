@@ -23,7 +23,7 @@ public class Obstacle extends GameObject {
         this.isBonus = b;
         this.image = res;
         this.speed = speed;
-        this.height = 30;
+        this.height = 300;
         this.x = 1000;
 
         if (isBonus == false) {

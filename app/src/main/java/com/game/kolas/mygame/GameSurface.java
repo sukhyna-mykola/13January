@@ -5,11 +5,14 @@ import android.annotation.TargetApi;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Build;
 
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+
+import com.game.kolas.mygame.level.Snowball;
 
 import static android.graphics.BitmapFactory.*;
 
@@ -27,7 +30,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     private GameModel model;
 
 
-    public GameSurface(GameActivity gameActivity,GameModel model) {
+    public GameSurface(GameActivity gameActivity, GameModel model) {
         super(gameActivity);
 
         this.model = model;
@@ -87,45 +90,69 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         if (canvas != null) {
             canvas.scale(scaleFactorX, scaleFactorY);
             p.setColor(Color.WHITE);
-
+            p.setTextSize(20);
 
             model.getBg().draw(canvas);
             model.getPlayer().draw(canvas);
-            model.getAdversary().draw(canvas);
-
             for (Obstacle m : model.getObstacles()) {
                 m.draw(canvas);
             }
-//           if (SystemClock.elapsedRealtime() - chr.getBase() > (LevelActivity.LEVEL + 1) * 5000)
-//                canvas.drawText("OPEN NEW LEVEL", 100, 200, p);
 
-            switch (model.getNexdialog()) {
-                case 0:
-                    if (model.isShowdialogvrag()) {
-                        canvas.drawBitmap(decodeResource(getResources(), R.drawable.padl), 100, 500, p);
-                    }
-                    if (model.isShowdialogplayer()) {
-                        canvas.drawBitmap(decodeResource(getResources(), R.drawable.nax), 600, 500, p);
-                    }
-                    break;
-                case 1:
-                    if (model.isShowdialogvrag()) {
-                        canvas.drawBitmap(decodeResource(getResources(), R.drawable.police), 100, 500, p);
-                    }
-                    if (model.isShowdialogplayer()) {
-                        canvas.drawBitmap(decodeResource(getResources(), R.drawable.pox), 600, 500, p);
-                    }
-                    ;
-                    break;
-            }
             if (model.isShow_sn()) {
                 p.setColor(new Color().WHITE);
-                //  canvas.drawCircle(x_sn, y_sn, 10, p);
+                for (Snowball snowball : model.getSnowballs()) {
+                    canvas.drawCircle(snowball.getX(), HEIGHT - snowball.getY(), 10, p);
+
+                }
                 p.setColor(new Color().BLACK);
+
             }
-            if (model.isShowbla()) {
-                canvas.drawBitmap(decodeResource(getResources(), R.drawable.pizd), 100, 500, p);
+            if (model.getAdversary().getEnergy() > 0) {
+
+                model.getAdversary().draw(canvas);
+
+                RectF rect = new RectF(model.getAdversary().getX()+50, HEIGHT - (model.getAdversary().getY() + 30)
+                        , model.getAdversary().getX() + model.getAdversary().getWidth() / 2, HEIGHT - (model.getAdversary().getY() + 10));
+                if (model.getAdversary().getEnergy() < 30) {
+                    p.setColor(Color.RED);
+                    canvas.drawRoundRect(rect, 5, 5, p);
+                } else if (model.getAdversary().getEnergy() >= 30 && model.getAdversary().getEnergy() < 70) {
+                    p.setColor(Color.YELLOW);
+                    canvas.drawRoundRect(rect, 5, 5, p);
+                } else if (model.getAdversary().getEnergy() >= 70) {
+                    p.setColor(Color.GREEN);
+                    canvas.drawRoundRect(rect, 5, 5, p);
+                }
+
+                if (model.isShowbla()) {
+                    canvas.drawBitmap(decodeResource(getResources(), R.drawable.pizd), 100, 500, p);
+                }
+
+                switch (model.getNexdialog()) {
+                    case 0:
+                        if (model.isShowdialogvrag()) {
+                            canvas.drawBitmap(decodeResource(getResources(), R.drawable.padl), 100, 500, p);
+                        }
+                        if (model.isShowdialogplayer()) {
+                            canvas.drawBitmap(decodeResource(getResources(), R.drawable.nax), 600, 500, p);
+                        }
+                        break;
+                    case 1:
+                        if (model.isShowdialogvrag()) {
+                            canvas.drawBitmap(decodeResource(getResources(), R.drawable.police), 100, 500, p);
+                        }
+                        if (model.isShowdialogplayer()) {
+                            canvas.drawBitmap(decodeResource(getResources(), R.drawable.pox), 600, 500, p);
+                        }
+                        ;
+                        break;
+                }
+
             }
+
+
+//           if (SystemClock.elapsedRealtime() - chr.getBase() > (LevelActivity.LEVEL + 1) * 5000)
+//                canvas.drawText("OPEN NEW LEVEL", 100, 200, p);
 
 
         }

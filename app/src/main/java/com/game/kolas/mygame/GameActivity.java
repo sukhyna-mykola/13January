@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.game.kolas.mygame.level.Level;
+import com.game.kolas.mygame.level.Snowball;
 
 import static com.game.kolas.mygame.DBHelper.BEST_TIME_KEY;
 import static com.game.kolas.mygame.DBHelper.ID_KEY;
@@ -50,8 +51,9 @@ public class GameActivity extends Activity implements View.OnClickListener, View
     private GameModel model;
     private DrawGame thread;
     private Chronometer chronometer;
-    private ImageButton pauseButton;
-    private ImageButton catchButton;
+    private ImageButton throwButton;
+    private  TextView countSnowballs;
+
     private ProgressBar progressBar;
 
     public static final String TAG = "TAG";
@@ -79,12 +81,10 @@ public class GameActivity extends Activity implements View.OnClickListener, View
         View view = layoutInflater.inflate(R.layout.bar, null);
 
         chronometer = (Chronometer) view.findViewById(R.id.timer);
-        pauseButton = (ImageButton) view.findViewById(R.id.pause);
-        catchButton = (ImageButton) view.findViewById(R.id.catch_bootle);
+        throwButton = (ImageButton) view.findViewById(R.id.throww_snowball);
+        countSnowballs = (TextView) view.findViewById(R.id.snowballs_count);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
-        catchButton.setOnClickListener(this);
-        pauseButton.setOnClickListener(this);
 
         pauseDialog = new DialogPause();
         endDialog = new DialogEnd();
@@ -123,6 +123,15 @@ public class GameActivity extends Activity implements View.OnClickListener, View
                 model.setCatchJamp(true);
                 jump();
                 break;
+            case R.id.throww_snowball:
+                for (Snowball snowball : model.getSnowballs()) {
+                    if (!snowball.isThrowed()) {
+                        snowball.setThrowed(true);
+                        model.throwSnowball(snowball);
+                        break;
+                    }
+                }
+                break;
         }
     }
 
@@ -140,7 +149,23 @@ public class GameActivity extends Activity implements View.OnClickListener, View
     public void update() {
         model.update();
         progressBar.setProgress(model.getProgress());
+        if (model.getCountSnowbolls()==0||model.getAdversary().getEnergy()<0)
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    throwButton.setVisibility(View.GONE);
+                    countSnowballs.setText("");
+                }
+            });
 
+        else
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    throwButton.setVisibility(View.VISIBLE);
+                    countSnowballs.setText(String.valueOf(model.getCountSnowbolls()));
+                }
+            });
         switch (model.getGameStatus()) {
             case STATUS_GAMING: {
                 gameView.update();
@@ -192,8 +217,8 @@ public class GameActivity extends Activity implements View.OnClickListener, View
     private void jump() {
         try {
             //умова для попередження безкінечного стрибка
-            if (model.getPlayer().getY() < model.getPlayer().getHeight()+30) {
-                model.getPlayer().setY(model.getPlayer().getHeight()+10);
+            if (model.getPlayer().getY() < model.getPlayer().getHeight() + 30) {
+                model.getPlayer().setY(model.getPlayer().getHeight() + 10);
                 model.getPlayer().jamp();
             }
         } catch (InterruptedException e) {
