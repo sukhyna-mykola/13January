@@ -5,14 +5,14 @@
 
         android:state_pressed="false"
 
-        android:drawable="@drawable/butt_no" />
+        android:drawable="@drawable/button" />
 
 
     <item
 
         android:state_pressed="true"
 
-        android:drawable="@drawable/butt_yes" />
+        android:drawable="@drawable/button_pressed" />
 
 
 

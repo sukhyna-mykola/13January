@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/bar_height">
+
+    <ImageButton
+        android:id="@+id/pause"
+        android:layout_width="@dimen/button_height"
+        android:layout_height="@dimen/button_height"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/butt_selt_pause"
+        android:onClick="onClick" />
+
+    <ImageButton
+        android:id="@+id/catch_bootle"
+        android:layout_width="@dimen/button_height"
+        android:layout_height="@dimen/button_height"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/butt_selt_arm"
+        android:onClick="onClick" />
+
+    <FrameLayout
+        android:layout_width="@dimen/button_height"
+        android:layout_height="@dimen/button_height"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/catch_bootle">
+
+        <ImageButton
+            android:id="@+id/throww_snowball"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="@dimen/button_height"
+            android:background="@drawable/butt_selt_throw"
+            android:onClick="onClick" />
+
+        <TextView
+            android:gravity="center"
+            android:text="23"
+            android:id="@+id/snowballs_count"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="@dimen/button_height"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:layout_toLeftOf="@+id/catch_bootle"
+        android:layout_toRightOf="@+id/pause"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:max="100"
+            android:progressDrawable="@drawable/progress_bar_background" />
+
+        <Chronometer
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:typeface="monospace"
+            android:textSize="30dp" />
+    </LinearLayout>
+
+
+</RelativeLayout>

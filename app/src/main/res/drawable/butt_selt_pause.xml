@@ -5,6 +5,6 @@
         android:state_pressed="false" />
 
     <item
-        android:drawable="@drawable/pause_yes"
+        android:drawable="@drawable/pause_pressed"
         android:state_pressed="true" />
 </selector>

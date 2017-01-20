@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <com.game.kolas.mygame.CustomFontTextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="16dp"
+        android:gravity="center" />
+
+    <com.game.kolas.mygame.CustomFontButton
+        android:id="@+id/play"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/butt_selt"
+        android:text="@string/continue_game" />
+
+    <com.game.kolas.mygame.CustomFontButton
+        android:id="@+id/newgame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/butt_selt"
+        android:text="@string/repeat_game" />
+
+    <com.game.kolas.mygame.CustomFontButton
+        android:id="@+id/mainmenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/butt_selt"
+        android:text="@string/menu_text" />
+</LinearLayout>

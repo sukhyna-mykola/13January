@@ -1,8 +1,26 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.game.kolas.mygame.StartActivity"
-    android:background="@drawable/fon_start">
+    android:background="@android:color/black"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context="com.game.kolas.mygame.StartActivity">
 
+    <com.game.kolas.mygame.CustomFontTextView
+        android:gravity="center"
+        android:text="@string/warning_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="35sp" />
 
-</FrameLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/warning_info"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="30sp" />
+
+</LinearLayout>

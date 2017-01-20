@@ -12,7 +12,7 @@
 
         android:state_pressed="true"
 
-        android:drawable="@drawable/arm_yes" />
+        android:drawable="@drawable/arm_pressed" />
 
 
 
