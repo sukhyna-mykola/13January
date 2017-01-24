@@ -16,8 +16,7 @@ public class Obstacle extends GameObject {
     protected boolean isBonus;
 
     private Random rand = new Random();
-    private Animation animation = new Animation();
-    private Bitmap spritesheet;
+
 
 
     public Obstacle(Bitmap res, float speed, boolean b) {

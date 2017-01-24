@@ -33,7 +33,7 @@
             android:background="@drawable/butt_selt_throw"
             android:onClick="onClick" />
 
-        <TextView
+        <com.game.kolas.mygame.views.CustomFontTextView
             android:id="@+id/snowballs_count"
             android:layout_width="@dimen/button_height"
             android:layout_height="@dimen/button_height"
@@ -42,57 +42,49 @@
     </FrameLayout>
 
 
-
     <LinearLayout
         android:id="@+id/progress_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/button_height"
+        android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/catch_bootle"
         android:layout_toRightOf="@+id/pause"
         android:gravity="center"
         android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:max="100"
-            android:progressDrawable="@drawable/progress_bar_background" />
 
         <Chronometer
+            android:textColor="@android:color/white"
             android:id="@+id/timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textSize="30dp"
             android:typeface="monospace" />
+        <FrameLayout
+            android:id="@+id/health_layout"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="@dimen/button_height"
+            android:layout_below="@+id/progress_layout"
+            android:layout_centerHorizontal="true">
+
+            <ImageButton
+                android:id="@+id/health_image"
+                android:layout_width="@dimen/button_height"
+                android:layout_height="@dimen/button_height"
+                android:background="@drawable/heart"
+                android:onClick="onClick" />
+            <com.game.kolas.mygame.views.CustomFontTextView
+                android:id="@+id/health_text"
+                android:layout_width="@dimen/button_height"
+                android:layout_height="@dimen/button_height"
+                android:gravity="center"
+                android:text="23"
+                android:textColor="@android:color/white" />
+        </FrameLayout>
+
+
     </LinearLayout>
-    <FrameLayout
-        android:layout_width="@dimen/button_height"
-        android:layout_height="@dimen/button_height"
-        android:layout_below="@+id/progress_layout"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/health_layout">
 
-        <ImageButton
-            android:id="@+id/health_image"
-            android:layout_width="@dimen/button_height"
-            android:layout_height="@dimen/button_height"
-            android:background="@drawable/heart"
-            android:onClick="onClick" />
-
-        <TextView
-            android:textColor="@android:color/white"
-            android:id="@+id/health_text"
-            android:layout_width="@dimen/button_height"
-            android:layout_height="@dimen/button_height"
-            android:gravity="center"
-            android:text="23" />
-    </FrameLayout>
 
 
 </RelativeLayout>

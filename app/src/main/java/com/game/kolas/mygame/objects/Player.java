@@ -9,29 +9,32 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.Log;
 
-import static android.content.ContentValues.TAG;
-import static com.game.kolas.mygame.DrawGame.FSP;
 import static com.game.kolas.mygame.views.GameSurface.HEIGHT;
 
 
 public class Player extends GameObject {
 
-    public static final float DY_JUMP = (float) 0.6;
+    public boolean isJumpFlag() {
+        return jumpFlag;
+    }
+
+    public static final float DY_JUMP = 1;
     private float heightJump;
 
     boolean pause = false;
 
-    private Animation animation = new Animation();
+    private Animation animation ;
     private Bitmap spritesheet;
 
-    private int energy;
+    private float energy;
     private Message message;
     private int health;
+    private boolean jumpFlag;
+    private RectF rect;
 
 
-    public Player(Bitmap res, int w, int h, int numFrames,int heightJump) {
+    public Player(Bitmap res, int w, int h, int numFrames, int heightJump,int pauseFrame) {
 
         this.y = h + MIN_Y_POSITION;
         this.height = h;
@@ -39,7 +42,9 @@ public class Player extends GameObject {
         this.energy = 100;
         this.heightJump = heightJump;
         this.visibility = true;
-       
+
+        animation = new Animation(pauseFrame);
+
 
         Bitmap[] image = new Bitmap[numFrames];
         this.spritesheet = res;
@@ -62,46 +67,42 @@ public class Player extends GameObject {
         this.energy = energy;
     }
 
-    public void jump() throws InterruptedException {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                animation.setPause(true);
-                float dy = (float) -Math.sqrt(heightJump);
+    public void setJumpFlag(boolean jumpFlag) {
+        this.jumpFlag = jumpFlag;
+    }
 
-                while (y >= height + MIN_Y_POSITION) {
-                    dy += DY_JUMP;
-                    Log.d(TAG, "y = " + y);
-                    while (pause)
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    //-Math.sqrt(heightJump)<dy<Math.sqrt(heightJump), де heightJump - висота стрибка
-                    //графік - парабола
-                    y = (height + MIN_Y_POSITION) + heightJump - (int) (Math.pow(dy, 2));
 
-                    try {
-                        Thread.sleep(FSP);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                y = (height + MIN_Y_POSITION);
-                animation.setPause(false);
-            }
-        });
-        thread.start();
-
+    public void resetDY() {
+        dy = (float) -Math.sqrt(heightJump);
 
     }
 
-    public int getEnergy() {
+    public Animation getAnimation() {
+        return animation;
+    }
+
+    public void jump() {
+
+        if (jumpFlag) {
+            dy += DY_JUMP;
+            //-Math.sqrt(heightJump)<dy<Math.sqrt(heightJump), де heightJump - висота стрибка
+            //графік - парабола
+            y = (height + MIN_Y_POSITION) + heightJump - (int) (Math.pow(dy, 2));
+
+            if (y <= height + MIN_Y_POSITION) {
+                y = (height + MIN_Y_POSITION);
+                jumpFlag = false;
+                animation.setPause(false);
+            }
+        }
+    }
+
+
+    public float getEnergy() {
         return energy;
     }
 
-    public void changeEnergy(int inc) {
+    public void changeEnergy(float inc) {
         this.energy += inc;
     }
 
@@ -114,10 +115,12 @@ public class Player extends GameObject {
     }
 
     public void update() {
-        if(this.isVisibility()){
-        animation.update();
-            if(message.isVisibility()){
-                message.setX(x+width/3*2);
+        if (this.isVisibility()) {
+            jump();
+
+            animation.update();
+            if (message.isVisibility()) {
+                message.setX(x + width / 3 * 2);
                 message.setY(y);
             }
         }
@@ -127,8 +130,7 @@ public class Player extends GameObject {
     public void draw(Canvas canvas, Paint p) {
         canvas.drawBitmap(animation.getImage(), x, HEIGHT - y, null);
 
-
-       RectF rect = new RectF(x+(width / 2 - energy / 2), HEIGHT - (y + 30), x+(width / 2 + energy / 2), HEIGHT - (y + 10));
+        rect = new RectF(x + (width / 2 - energy / 2), HEIGHT - (y + 30), x + (width / 2 + energy / 2), HEIGHT - (y + 10));
 
         if (energy < 30) {
             p.setColor(Color.RED);
@@ -140,15 +142,15 @@ public class Player extends GameObject {
             p.setColor(Color.GREEN);
             canvas.drawRoundRect(rect, 5, 5, p);
         }
-        if(message.isVisibility())
-            message.draw(canvas,p);
+        if (message.isVisibility())
+            message.draw(canvas, p);
     }
 
     public void setPause(boolean pause) {
         this.pause = pause;
     }
 
-    public void incX(int inc){
-        x+=inc;
+    public void incX(float inc) {
+        x += inc;
     }
 }

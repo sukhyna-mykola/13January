@@ -12,7 +12,13 @@ public class Animation {
     private long startTime;
     private long delay;
     private boolean playedOnce;
-    boolean pause = false;
+    private boolean pause = false;
+    private int pauseFrame;
+
+
+    public Animation(int pauseFrame) {
+        this.pauseFrame = pauseFrame;
+    }
 
     public void setFrames(Bitmap[] frames) {
         this.frames = frames;
@@ -48,7 +54,7 @@ public class Animation {
                 currentFrame = 0;
                 playedOnce = true;
             }
-        } else currentFrame = 2;
+        } else currentFrame = pauseFrame;
     }
 
     public Bitmap getImage() {

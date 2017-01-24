@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Build;
 
@@ -20,8 +21,7 @@ import android.view.WindowManager;
 import android.widget.Chronometer;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+
 
 import com.game.kolas.mygame.data.DBHelper;
 import com.game.kolas.mygame.data.DataGame;
@@ -30,6 +30,7 @@ import com.game.kolas.mygame.dialogs.DialogMethods;
 import com.game.kolas.mygame.dialogs.DialogPause;
 import com.game.kolas.mygame.objects.Level;
 import com.game.kolas.mygame.objects.Snowball;
+import com.game.kolas.mygame.views.CustomFontTextView;
 import com.game.kolas.mygame.views.GameSurface;
 
 import java.util.Arrays;
@@ -61,16 +62,14 @@ public class GameActivity extends AppCompatActivity implements DialogMethods, Vi
     private DrawGame thread;
     private Chronometer chronometer;
     private ImageButton throwButton;
-    private TextView countSnowballs;
-    private TextView countHearths;
-    private ProgressBar progressBar;
+    private CustomFontTextView countSnowballs;
+    private CustomFontTextView countHearths;
+
 
     public static final String TAG = "TAG";
 
     private long timeWhenStopped = 0;
     private int level;
-
-
 
 
     @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -92,14 +91,15 @@ public class GameActivity extends AppCompatActivity implements DialogMethods, Vi
 
         chronometer = (Chronometer) view.findViewById(R.id.timer);
         throwButton = (ImageButton) view.findViewById(R.id.throww_snowball);
-        countSnowballs = (TextView) view.findViewById(R.id.snowballs_count);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        countHearths = (TextView) view.findViewById(R.id.health_text);
+        countSnowballs = (CustomFontTextView) view.findViewById(R.id.snowballs_count);
+
+        countHearths = (CustomFontTextView) view.findViewById(R.id.health_text);
 
         throwButton.setOnLongClickListener(this);
-        progressBar.setProgress(model.getProgress());
+
         chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
-        chronometer.start();
+        chronometer.setTypeface(Typeface.createFromAsset(this.getAssets(), "fonts/myFont.ttf"));
+
 
         FrameLayout game = new FrameLayout(this);
         game.addView(gameView);
@@ -111,11 +111,14 @@ public class GameActivity extends AppCompatActivity implements DialogMethods, Vi
 
         mPlayer = MediaPlayer.create(this, R.raw.pogon);
         mPlayer.setLooping(true);
-        if (sound)
-            mPlayer.start();
+
 
         thread = new DrawGame(this);
         thread.setRunning(true);
+
+        if (sound)
+            mPlayer.start();
+        chronometer.start();
         thread.start();
 
 
@@ -159,26 +162,17 @@ public class GameActivity extends AppCompatActivity implements DialogMethods, Vi
     }
 
     public void update() {
+
         model.update();
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                progressBar.setProgress(model.getProgress());
                 countHearths.setText(String.valueOf(model.getPlayer().getHealth()));
             }
         });
 
-        if (model.getCountSnowbolls() == 0 || model.getAdversary().getEnergy() < 0) {
-            if (model.getAdversary().getEnergy() < 0) {
-                try {
-                    if (!DataGame.levels.get(level + 1).isOpen()) {
-                        DataGame.levels.get(level + 1).setOpen(true);
-                        updateDB(DataGame.levels.get(level + 1));
-                    }
-                } catch (Exception e) {
-
-                }
-            }
+        if (model.getCountSnowbolls() == 0 && model.getAdversary().isVisibility()) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -194,6 +188,18 @@ public class GameActivity extends AppCompatActivity implements DialogMethods, Vi
                     countSnowballs.setText(String.valueOf(model.getCountSnowbolls()));
                 }
             });
+
+        if (model.getAdversary().getEnergy() < 0) {
+            try {
+                if (!DataGame.levels.get(level + 1).isOpen()) {
+                    DataGame.levels.get(level + 1).setOpen(true);
+                    updateDB(DataGame.levels.get(level + 1));
+                }
+            } catch (Exception e) {
+            }
+        }
+
+
         switch (model.getGameStatus()) {
             case STATUS_GAMING: {
                 gameView.update();
@@ -225,7 +231,7 @@ public class GameActivity extends AppCompatActivity implements DialogMethods, Vi
 
     @Override
     public void exitGame() {
-        startActivity(new Intent(this,MenuActivity.class));
+        startActivity(new Intent(this, MenuActivity.class));
         finish();
     }
 

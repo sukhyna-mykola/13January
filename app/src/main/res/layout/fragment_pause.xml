@@ -6,6 +6,7 @@
 
     <com.game.kolas.mygame.views.CustomFontTextView
         android:id="@+id/textView"
+        android:textSize="23sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

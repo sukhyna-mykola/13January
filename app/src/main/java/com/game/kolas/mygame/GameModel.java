@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import static android.graphics.BitmapFactory.decodeResource;
+import static com.game.kolas.mygame.DrawGame.FPS;
 import static com.game.kolas.mygame.data.DataGame.dialogs;
 import static com.game.kolas.mygame.data.DataGame.levels;
 import static com.game.kolas.mygame.views.GameSurface.HEIGHT;
@@ -33,7 +34,7 @@ import static com.game.kolas.mygame.views.GameSurface.WIDTH;
 public class GameModel {
 
     private ArrayList<Obstacle> obstacles;
-
+    private ArrayList<Obstacle> bonuses;
     private ArrayList<Snowball> snowballs;
     private Background bg;
     private Player player;
@@ -68,7 +69,7 @@ public class GameModel {
     private Resources resources;
     private float obstaclesSpeed;
     private float whenNewBonusTime;
-    private Message moon;
+
     private Message newLevel;
     private SoundPool sp;
     private Context context;
@@ -95,7 +96,7 @@ public class GameModel {
     }
 
     public int getProgress() {
-        return player.getEnergy();
+        return (int) player.getEnergy();
     }
 
     public ArrayList<Snowball> getSnowballs() {
@@ -106,9 +107,6 @@ public class GameModel {
         return newLevel;
     }
 
-    public Message getMoon() {
-        return moon;
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public GameModel(Context context, int level) {
@@ -116,12 +114,8 @@ public class GameModel {
         this.resources = context.getResources();
         this.level = level;
 
-
-        newLevel = new Message(decodeResource(resources, R.drawable.template_new_level_text), WIDTH / 2 - 200, HEIGHT / 2, 400, 200, 0, 0);
-        newLevel.setText("Вiдкрито рiвень :" + (level + 2));
-
-        moon = new Message(decodeResource(resources, R.drawable.moon), 0, HEIGHT - 200, 175, 200, 0, 0);
-        moon.setVisibility(true);
+        newLevel = new Message(decodeResource(resources, R.drawable.button), WIDTH / 2 - 200, HEIGHT / 3 * 2, 400, 100, 0, 0);
+        newLevel.setText("Вiдкрито рiвень " + (level + 2));
 
         initGameData();
 
@@ -130,21 +124,6 @@ public class GameModel {
     public int getGameStatus() {
         return gameStatus;
     }
-
-    public void jump(Player obj) {
-        sp.play(SOUND_JUMP_ID, 1, 1, 1, 0, 1);
-        try {
-            //умова для попередження безкінечного стрибка
-            if (obj.getY() < obj.getHeight() + 30) {
-                obj.setY(obj.getHeight() + 10);
-                obj.jump();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-    }
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void initGameData() {
@@ -176,30 +155,28 @@ public class GameModel {
 
         switch (level) {
             case 0:
-                adversary = new Player(decodeResource(resources, R.drawable.adversary_level1), 200, 200, 4, 100);
-                player = new Player(decodeResource(resources, R.drawable.player_level1), 175, 200, 4, 144);
+                adversary = new Player(decodeResource(resources, R.drawable.adversary_level1), 200, 200, 4, 100, 3);
+                player = new Player(decodeResource(resources, R.drawable.player_level1), 175, 200, 4, 144, 2);
                 SOUND_RUN_ID = sp.load(context, R.raw.run, SOUND_RUN_STREAM);
                 break;
             case 1:
-                adversary = new Player(decodeResource(resources, R.drawable.adversary_level2), 266, 200, 3, 0);
-                player = new Player(decodeResource(resources, R.drawable.player_level2), 175, 200, 4, 144);
-
+                adversary = new Player(decodeResource(resources, R.drawable.adversary_level2), 266, 200, 3, 0, 0);
+                player = new Player(decodeResource(resources, R.drawable.player_level2), 175, 200, 4, 144, 2);
                 SOUND_RUN_ID = sp.load(context, R.raw.bike, SOUND_RUN_STREAM);
                 break;
             case 2:
-                adversary = new Player(decodeResource(resources, R.drawable.adversary_level3), 200, 200, 8, 100);
-                player = new Player(decodeResource(resources, R.drawable.player_level3), 175, 200, 4, 144);
+                adversary = new Player(decodeResource(resources, R.drawable.adversary_level3), 200, 200, 8, 100, 2);
+                player = new Player(decodeResource(resources, R.drawable.player_level3), 175, 200, 4, 144, 2);
                 SOUND_RUN_ID = sp.load(context, R.raw.run, SOUND_RUN_STREAM);
                 break;
             case 3:
-                adversary = new Player(decodeResource(resources, R.drawable.adversary_level4), 375, 300, 8, 100);
-                player = new Player(decodeResource(resources, R.drawable.player_level1), 175, 200, 4, 144);
+                adversary = new Player(decodeResource(resources, R.drawable.adversary_level4), 375, 300, 8, 150, 6);
+                player = new Player(decodeResource(resources, R.drawable.player_level1), 175, 200, 4, 144, 2);
                 SOUND_RUN_ID = sp.load(context, R.raw.horse, SOUND_RUN_STREAM);
                 break;
 
         }
 
-        adversary.setX(0);
         player.setX(adversary.getWidth());
 
         player.setMessage(new Message(decodeResource(resources, R.drawable.template_dialog_text), (int) (player.getX() + player.getWidth() / 3 * 2), (int) (player.getY()), 200, 50, 15, 0));
@@ -212,13 +189,15 @@ public class GameModel {
         bg = new Background(listImages);
 
         obstacles = new ArrayList<>();
+        bonuses = new ArrayList<>();
         snowballs = new ArrayList<>();
+
         gameStatus = STATUS_GAMING;
 
-        obstaclesSpeed = 14 - level;
-        player.setHealth(levels.size() - level);
+        player.setHealth(3);
 
-        obstacleStartTime = (float) r.nextInt(700);
+        obstaclesSpeed = (float) (12 - this.level / 2.0);
+
         catchJamp = false;
         takts = 0;
         incObstaclesSpeepTime = 0;
@@ -226,10 +205,12 @@ public class GameModel {
         decEnergyTime = 0;
         whenNewBonusTime = 0;
         countSnowbolls = 0;
-        newLevel.setVisibility(false);
-        moon.setX(0);
 
 
+    }
+
+    public ArrayList<Obstacle> getBonuses() {
+        return bonuses;
     }
 
     public ArrayList<Obstacle> getObstacles() {
@@ -240,54 +221,56 @@ public class GameModel {
         return sp;
     }
 
+    public void jump(Player obj) {
+        sp.play(SOUND_JUMP_ID, 1, 1, 1, 0, 1);
+        if (!obj.isJumpFlag() || obj.getY() - obj.getHeight() < 30) {
+            obj.resetDY();
+            obj.getAnimation().setPause(true);
+            obj.setJumpFlag(true);
+        }
+
+
+    }
+
+    //Метод оновлення  параметрів гри
     public void update() {
-        moon.setX((float) (moon.getX() + 0.1));
+
 
         if (player.getX() < player.getEnergy() * 2 + adversary.getWidth())
             player.incX(1);
         else
             player.incX(-1);
 
-        //зменшення еергії кожну секунду
+        //зменшення еергії кожні 1c.
         long checkTime = takts - decEnergyTime;
-        if (checkTime > 17) {//~1s
-            player.changeEnergy(-1);
+        if (checkTime > FPS) {//~1s
+            player.changeEnergy(-1f);
             decEnergyTime = takts;
         }
 
         //збільшення швидкості перешкод кожні 20с.
         checkTime = takts - incObstaclesSpeepTime;
-        if (checkTime > 400) {//~20s.
-            if (r.nextBoolean() && adversary.isVisibility())
+        if (checkTime > FPS * 20) {//~20s.
+            if (adversary.isVisibility())
                 dialog();
 
-
-            if (obstaclesSpeed >= 10)
+            if (obstaclesSpeed >= 9)
                 obstaclesSpeed -= 0.5;
+
             incObstaclesSpeepTime = takts;
         }
 
         //Додавання нової перешкоди
-        if (obstacles.size() == 0) {
-            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.obstacle), obstaclesSpeed, false));
-        } else {
-            int k = obstacles.size() - 1;
-            while (obstacles.get(k).isBonus() != false)
-                k--;
-            if (k >= 0 && obstacles.get(k).getX() < obstacleStartTime) {
-                if (r.nextBoolean())
-                    obstacles.add(new Obstacle(decodeResource(resources, R.drawable.obstacle), obstaclesSpeed, false));
-                else
-                    obstacles.add(new Obstacle(decodeResource(resources, R.drawable.wood), obstaclesSpeed, false));
-
-                obstacleStartTime = (float) r.nextInt(WIDTH - player.getWidth() - 50);
+        if (obstacles.size() >= 1) {
+            if (obstacles.get(obstacles.size() - 1).getX() < obstacleStartTime) {
+                addNewObstacle();
             }
-        }
+        } else addNewObstacle();
 
         //бонус
         checkTime = takts - addNewBonusTime;
         if (checkTime > whenNewBonusTime) {
-            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.beer), 5, true));
+            bonuses.add(new Obstacle(decodeResource(resources, R.drawable.beer), 5, true));
             whenNewBonusTime = player.getEnergy() * 2 + r.nextInt(50);
             addNewBonusTime = takts;
         }
@@ -296,51 +279,53 @@ public class GameModel {
         for (int i = 0; i < obstacles.size(); i++) {
             //стрибок суперника
             if (level != 1) {
-                if (obstacles.get(i).getX() < adversary.getWidth() / 2 + 40 && obstacles.get(i).isVisibility()) {
-                    if (adversary.getY() <= adversary.getHeight() + 30) {
-                        adversary.setY(adversary.getHeight() + 10);
-                        jump(adversary);
-                    }
-
-
-                }
+                if (obstacles.get(i).getX() < adversary.getWidth() / 2 + 40 && obstacles.get(i).isVisibility() && !adversary.isJumpFlag())
+                    jump(adversary);
             }
             //update obstacle
             obstacles.get(i).update();
+
             if (obstacles.get(i).isVisibility())
                 if (MacroCollision(player, obstacles.get(i))) {
-
-                    if (obstacles.get(i).isBonus()) {
-                        if (catchJamp) {
-                            obstacles.get(i).setVisibility(false);
-                            sp.play(SOUND_BONUS_ID, 1, 1, 1, 0, 1);
-
-                            player.changeEnergy(5 + level);
-                            int count = r.nextInt(5 + level);
-
-                            for (int j = 0; j < count; j++) {
-                                snowballs.add(new Snowball());
-                            }
-                            countSnowbolls = snowballs.size();
-
-                        }
+                    obstacles.get(i).setVisibility(false);
+                    player.changeEnergy(-(level + 5));
+                    if (player.getHealth() > 0) {
+                        player.setHealth(player.getHealth() - 1);
+                        sp.play(SOUND_DONE_THROW_ID, 0.5f, 0.5f, 1, 0, 1);
                     } else {
-                        obstacles.get(i).setVisibility(false);
-                        player.changeEnergy(-(player.getHealth() + 5));
-                        if (player.getHealth() > 0) {
-                            player.setHealth(player.getHealth() - 1);
-                            sp.play(SOUND_DONE_THROW_ID, 0.5f, 0.5f, 1, 0, 1);
-                        } else {
-                            gameStatus = STATUS_END;
-                            break;
-                        }
+                        gameStatus = STATUS_END;
+                        break;
                     }
+
                 }
             if (obstacles.get(i).getX() < -obstacles.get(i).getWidth())
                 obstacles.remove(i);
 
         }
 
+        for (int i = 0; i < bonuses.size(); i++) {
+            //update bonuses
+            bonuses.get(i).update();
+
+            if (bonuses.get(i).isVisibility())
+                if (MacroCollision(player, bonuses.get(i))) {
+                    if (catchJamp) {
+                        bonuses.get(i).setVisibility(false);
+                        sp.play(SOUND_BONUS_ID, 1, 1, 1, 0, 1);
+
+                        player.changeEnergy(5 + level);
+                        int count = r.nextInt(5 + level);
+
+                        for (int j = 0; j < count; j++) {
+                            snowballs.add(new Snowball());
+                        }
+                        countSnowbolls = snowballs.size();
+                    }
+                }
+            if (bonuses.get(i).getX() < -bonuses.get(i).getWidth())
+                bonuses.remove(i);
+
+        }
         //якщо закінчилая енергія в гравця
         if (player.getEnergy() <= 0) {
             gameStatus = STATUS_END;
@@ -349,9 +334,10 @@ public class GameModel {
         //якщо закінчилася енергія в суперника
         if (adversary.getEnergy() < 0) {
             adversary.incX(-1);
-            if (!levels.get(level + 1).isOpen()) {
-                newLevel.setVisibility(true);
-            }
+            if (level + 1 != levels.size())
+                if (!levels.get(level + 1).isOpen()) {
+                    newLevel.setVisibility(true);
+                }
             //якщо суперник зник з екрану
             if (adversary.getX() + adversary.getWidth() < 0) {
                 adversary.setVisibility(false);
@@ -359,16 +345,26 @@ public class GameModel {
             }
         }
 
-        player.update();
-        adversary.update();
-        bg.update();
-
         if (getGameStatus() == STATUS_END) {
             sp.play(SOUND_DONE_THROW_ID, 0.5f, 0.5f, 1, 0, 1);
             sp.release();
 
         }
+
+        player.update();
+        adversary.update();
+        bg.update();
+
         takts++;
+    }
+
+
+    private void addNewObstacle() {
+        if (r.nextBoolean())
+            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.obstacle), obstaclesSpeed, false));
+        else
+            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.wood), obstaclesSpeed, false));
+        obstacleStartTime = (float) r.nextInt(WIDTH / 2) + (player.getWidth() + 50);
     }
 
     public int getCountSnowbolls() {
@@ -421,7 +417,9 @@ public class GameModel {
 
             }
         });
+        thread.setDaemon(true);
         thread.start();
+
 
     }
 
@@ -471,7 +469,10 @@ public class GameModel {
                 adversary.getMessage().setVisibility(false);
             }
         });
+        thread.setDaemon(true);
+
         thread.start();
+
 
     }
 }

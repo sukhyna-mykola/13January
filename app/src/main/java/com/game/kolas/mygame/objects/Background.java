@@ -19,7 +19,7 @@ public class Background {
         listBackgroundImages.toArray(images);
         max = listBackgroundImages.size();
         pos=0;
-        dx = -3;
+        dx = -2;
     }
 
 

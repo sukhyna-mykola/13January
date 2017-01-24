@@ -35,7 +35,7 @@ public  class DialogPause extends DialogFragment implements View.OnClickListener
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_pausepause, null);
+        View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_pause, null);
         v.findViewById(R.id.play).setOnClickListener(this);
         v.findViewById(R.id.newgame).setOnClickListener(this);
         v.findViewById(R.id.mainmenu).setOnClickListener(this);
