@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <com.game.kolas.mygame.CustomFontTextView
+    <com.game.kolas.mygame.views.CustomFontTextView
         android:textSize="23sp"
         android:text="@string/settings_text"
         android:layout_width="wrap_content"

@@ -1,4 +1,4 @@
-package com.game.kolas.mygame;
+package com.game.kolas.mygame.objects;
 
 /**
  * Created by kolas on 26.09.2015.

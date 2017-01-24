@@ -3,25 +3,37 @@ package com.game.kolas.mygame;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
+import com.game.kolas.mygame.objects.Background;
 import com.game.kolas.mygame.objects.GameObject;
+import com.game.kolas.mygame.objects.Message;
 import com.game.kolas.mygame.objects.Obstacle;
 import com.game.kolas.mygame.objects.Player;
 import com.game.kolas.mygame.objects.Snowball;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import static android.graphics.BitmapFactory.decodeResource;
-import static com.game.kolas.mygame.DataGame.levels;
+import static com.game.kolas.mygame.data.DataGame.dialogs;
+import static com.game.kolas.mygame.data.DataGame.levels;
+import static com.game.kolas.mygame.views.GameSurface.HEIGHT;
+import static com.game.kolas.mygame.views.GameSurface.WIDTH;
 
 /**
  * Created by mykola on 17.01.17.
  */
 
 public class GameModel {
+
     private ArrayList<Obstacle> obstacles;
+
     private ArrayList<Snowball> snowballs;
     private Background bg;
     private Player player;
@@ -36,7 +48,6 @@ public class GameModel {
     public static final int SOUND_DONE_THROW_STREAM = 2;
     public static final int SOUND_RUN_STREAM = 3;
     public static final int SOUND_BONUS_STREAM = 4;
-
     public int SOUND_JUMP_ID;
     public int SOUND_THROW_ID;
     public int SOUND_DONE_THROW_ID;
@@ -46,12 +57,6 @@ public class GameModel {
     public static final int STATUS_GAMING = 0;
     public static final int STATUS_END = 1;
 
-    boolean showDialog;
-    boolean showbla;
-    boolean show_sn;
-
-    boolean showDialogPlayer;
-    private String dialogText;
     private int level;
 
     private float obstacleStartTime;
@@ -61,14 +66,12 @@ public class GameModel {
     long addNewBonusTime;
     long decEnergyTime;
     private Resources resources;
-    private int obstaclesSpeed;
+    private float obstaclesSpeed;
     private float whenNewBonusTime;
-
+    private Message moon;
+    private Message newLevel;
     private SoundPool sp;
-
-    public String getDialogText() {
-        return dialogText;
-    }
+    private Context context;
 
     public boolean isCatchJamp() {
         return catchJamp;
@@ -78,27 +81,6 @@ public class GameModel {
         this.catchJamp = catchJamp;
     }
 
-    public boolean isShowdialog() {
-
-        return showDialog;
-    }
-
-    public boolean isShowbla() {
-        return showbla;
-    }
-
-    public boolean isShow_sn() {
-        return show_sn;
-    }
-
-    public boolean isShowdialogplayer() {
-        return showDialogPlayer;
-    }
-
-
-    public ArrayList<Obstacle> getObstacles() {
-        return obstacles;
-    }
 
     public Background getBg() {
         return bg;
@@ -120,33 +102,26 @@ public class GameModel {
         return snowballs;
     }
 
-    public GameModel(Context context, int level, SoundPool sp) {
+    public Message getNewLevel() {
+        return newLevel;
+    }
+
+    public Message getMoon() {
+        return moon;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public GameModel(Context context, int level) {
+        this.context = context;
         this.resources = context.getResources();
         this.level = level;
-        this.sp = sp;
-        SOUND_JUMP_ID = sp.load(context, R.raw.jump, SOUND_JUMP_STREAM);
-        SOUND_BONUS_ID = sp.load(context, R.raw.bonus, SOUND_BONUS_STREAM);
-        SOUND_THROW_ID = sp.load(context, R.raw.throw_snowball, SOUND_THROW_STREAM);
-        SOUND_DONE_THROW_ID = sp.load(context, R.raw.done_throw, SOUND_DONE_THROW_STREAM);
 
-        switch (level) {
-            case 0:
-                SOUND_RUN_ID = sp.load(context, R.raw.run, SOUND_RUN_STREAM);
-                break;
-            case 1:
-                SOUND_RUN_ID = sp.load(context, R.raw.bike, SOUND_RUN_STREAM);
-                break;
-            case 2:
-                SOUND_RUN_ID = sp.load(context, R.raw.run, SOUND_RUN_STREAM);
-                break;
-        }
-        sp.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int i, int i1) {
-                if (i == SOUND_RUN_ID)
-                    soundPool.play(SOUND_RUN_ID, 0.8f, 0.8f, 5, -1, 1);
-            }
-        });
+
+        newLevel = new Message(decodeResource(resources, R.drawable.template_new_level_text), WIDTH / 2 - 200, HEIGHT / 2, 400, 200, 0, 0);
+        newLevel.setText("Вiдкрито рiвень :" + (level + 2));
+
+        moon = new Message(decodeResource(resources, R.drawable.moon), 0, HEIGHT - 200, 175, 200, 0, 0);
+        moon.setVisibility(true);
 
         initGameData();
 
@@ -170,28 +145,65 @@ public class GameModel {
 
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void initGameData() {
+        if ((android.os.Build.VERSION.SDK_INT) >= 21) {
+            AudioAttributes attributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+            sp = new SoundPool.Builder()
+                    .setAudioAttributes(attributes)
+                    .setMaxStreams(5)
+                    .build();
+        } else {
+            sp = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        }
+
+        SOUND_JUMP_ID = sp.load(context, R.raw.jump, SOUND_JUMP_STREAM);
+        SOUND_BONUS_ID = sp.load(context, R.raw.bonus, SOUND_BONUS_STREAM);
+        SOUND_THROW_ID = sp.load(context, R.raw.throw_snowball, SOUND_THROW_STREAM);
+        SOUND_DONE_THROW_ID = sp.load(context, R.raw.done_throw, SOUND_DONE_THROW_STREAM);
+
+        sp.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int i, int i1) {
+                if (i == SOUND_RUN_ID)
+                    soundPool.play(SOUND_RUN_ID, 0.8f, 0.8f, 5, -1, 1);
+            }
+        });
 
         switch (level) {
             case 0:
                 adversary = new Player(decodeResource(resources, R.drawable.adversary_level1), 200, 200, 4, 100);
                 player = new Player(decodeResource(resources, R.drawable.player_level1), 175, 200, 4, 144);
-                adversary.setX(0);
-                player.setX(200);
+                SOUND_RUN_ID = sp.load(context, R.raw.run, SOUND_RUN_STREAM);
                 break;
             case 1:
                 adversary = new Player(decodeResource(resources, R.drawable.adversary_level2), 266, 200, 3, 0);
                 player = new Player(decodeResource(resources, R.drawable.player_level2), 175, 200, 4, 144);
-                adversary.setX(0);
-                player.setX(266);
+
+                SOUND_RUN_ID = sp.load(context, R.raw.bike, SOUND_RUN_STREAM);
                 break;
             case 2:
-                adversary = new Player(decodeResource(resources, R.drawable.adversaty_level3), 220, 200, 4, 100);
+                adversary = new Player(decodeResource(resources, R.drawable.adversary_level3), 200, 200, 8, 100);
                 player = new Player(decodeResource(resources, R.drawable.player_level3), 175, 200, 4, 144);
-                adversary.setX(0);
-                player.setX(200);
+                SOUND_RUN_ID = sp.load(context, R.raw.run, SOUND_RUN_STREAM);
                 break;
+            case 3:
+                adversary = new Player(decodeResource(resources, R.drawable.adversary_level4), 375, 300, 8, 100);
+                player = new Player(decodeResource(resources, R.drawable.player_level1), 175, 200, 4, 144);
+                SOUND_RUN_ID = sp.load(context, R.raw.horse, SOUND_RUN_STREAM);
+                break;
+
         }
+
+        adversary.setX(0);
+        player.setX(adversary.getWidth());
+
+        player.setMessage(new Message(decodeResource(resources, R.drawable.template_dialog_text), (int) (player.getX() + player.getWidth() / 3 * 2), (int) (player.getY()), 200, 50, 15, 0));
+        adversary.setMessage(new Message(decodeResource(resources, R.drawable.template_dialog_text), (int) (adversary.getX() + adversary.getWidth() / 3 * 2), (int) (adversary.getY()), 200, 50, 15, 0));
 
         ArrayList<Bitmap> listImages = new ArrayList<>();
         listImages.add(decodeResource(resources, R.drawable.first));
@@ -203,69 +215,80 @@ public class GameModel {
         snowballs = new ArrayList<>();
         gameStatus = STATUS_GAMING;
 
-        showDialog = false;
-        showbla = false;
-        show_sn = false;
+        obstaclesSpeed = 14 - level;
+        player.setHealth(levels.size() - level);
 
-        showDialogPlayer = false;
         obstacleStartTime = (float) r.nextInt(700);
         catchJamp = false;
         takts = 0;
         incObstaclesSpeepTime = 0;
         addNewBonusTime = 0;
         decEnergyTime = 0;
-        obstaclesSpeed = 15 - level;
         whenNewBonusTime = 0;
         countSnowbolls = 0;
+        newLevel.setVisibility(false);
+        moon.setX(0);
+
 
     }
 
-    public void update() {
+    public ArrayList<Obstacle> getObstacles() {
+        return obstacles;
+    }
 
-        if (player.getX() < player.getEnergy() * 2 + 200)
+    public SoundPool getSp() {
+        return sp;
+    }
+
+    public void update() {
+        moon.setX((float) (moon.getX() + 0.1));
+
+        if (player.getX() < player.getEnergy() * 2 + adversary.getWidth())
             player.incX(1);
         else
             player.incX(-1);
 
         //зменшення еергії кожну секунду
         long checkTime = takts - decEnergyTime;
-        if (checkTime > 13) {//~1s
+        if (checkTime > 17) {//~1s
             player.changeEnergy(-1);
             decEnergyTime = takts;
         }
 
         //збільшення швидкості перешкод кожні 20с.
         checkTime = takts - incObstaclesSpeepTime;
-        if (checkTime > 800) {//~20s.
-            dialog();
-            if (obstaclesSpeed > 10)
-                obstaclesSpeed--;
+        if (checkTime > 400) {//~20s.
+            if (r.nextBoolean() && adversary.isVisibility())
+                dialog();
+
+
+            if (obstaclesSpeed >= 10)
+                obstaclesSpeed -= 0.5;
             incObstaclesSpeepTime = takts;
         }
 
         //Додавання нової перешкоди
         if (obstacles.size() == 0) {
             obstacles.add(new Obstacle(decodeResource(resources, R.drawable.obstacle), obstaclesSpeed, false));
-        } else if (obstacles.get(obstacles.size() - 1).getX() < obstacleStartTime) {
-            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.obstacle), obstaclesSpeed, false));
-            obstacleStartTime = (float) r.nextInt(800);
+        } else {
+            int k = obstacles.size() - 1;
+            while (obstacles.get(k).isBonus() != false)
+                k--;
+            if (k >= 0 && obstacles.get(k).getX() < obstacleStartTime) {
+                if (r.nextBoolean())
+                    obstacles.add(new Obstacle(decodeResource(resources, R.drawable.obstacle), obstaclesSpeed, false));
+                else
+                    obstacles.add(new Obstacle(decodeResource(resources, R.drawable.wood), obstaclesSpeed, false));
 
-        } else if ((obstacles.get(obstacles.size() - 1).isBonus())) {
-            if (obstacles.get(obstacles.size() - 2).getX() < obstacleStartTime) {
-                obstacles.add(new Obstacle(decodeResource(resources, R.drawable.wood), obstaclesSpeed, false));
-                obstacleStartTime = (float) r.nextInt(800);
+                obstacleStartTime = (float) r.nextInt(WIDTH - player.getWidth() - 50);
             }
         }
 
         //бонус
         checkTime = takts - addNewBonusTime;
         if (checkTime > whenNewBonusTime) {
-
             obstacles.add(new Obstacle(decodeResource(resources, R.drawable.beer), 5, true));
-            if (player.getEnergy() < 30)
-                whenNewBonusTime = 200;
-            else
-                whenNewBonusTime = player.getEnergy() * 2 + 200;
+            whenNewBonusTime = player.getEnergy() * 2 + r.nextInt(50);
             addNewBonusTime = takts;
         }
 
@@ -273,9 +296,8 @@ public class GameModel {
         for (int i = 0; i < obstacles.size(); i++) {
             //стрибок суперника
             if (level != 1) {
-                if (obstacles.get(i).getX() < adversary.getWidth() / 2 + 30) {
-
-                    if (adversary.getY() < adversary.getHeight() + 30) {
+                if (obstacles.get(i).getX() < adversary.getWidth() / 2 + 40 && obstacles.get(i).isVisibility()) {
+                    if (adversary.getY() <= adversary.getHeight() + 30) {
                         adversary.setY(adversary.getHeight() + 10);
                         jump(adversary);
                     }
@@ -285,29 +307,67 @@ public class GameModel {
             }
             //update obstacle
             obstacles.get(i).update();
-            if (MacroCollision(player, obstacles.get(i))) {
-                obstacles.remove(i);
-                gameStatus = STATUS_END;
-                break;
+            if (obstacles.get(i).isVisibility())
+                if (MacroCollision(player, obstacles.get(i))) {
 
-            }
-            if (obstacles.get(i).getX() < -50)
+                    if (obstacles.get(i).isBonus()) {
+                        if (catchJamp) {
+                            obstacles.get(i).setVisibility(false);
+                            sp.play(SOUND_BONUS_ID, 1, 1, 1, 0, 1);
+
+                            player.changeEnergy(5 + level);
+                            int count = r.nextInt(5 + level);
+
+                            for (int j = 0; j < count; j++) {
+                                snowballs.add(new Snowball());
+                            }
+                            countSnowbolls = snowballs.size();
+
+                        }
+                    } else {
+                        obstacles.get(i).setVisibility(false);
+                        player.changeEnergy(-(player.getHealth() + 5));
+                        if (player.getHealth() > 0) {
+                            player.setHealth(player.getHealth() - 1);
+                            sp.play(SOUND_DONE_THROW_ID, 0.5f, 0.5f, 1, 0, 1);
+                        } else {
+                            gameStatus = STATUS_END;
+                            break;
+                        }
+                    }
+                }
+            if (obstacles.get(i).getX() < -obstacles.get(i).getWidth())
                 obstacles.remove(i);
+
         }
 
+        //якщо закінчилая енергія в гравця
         if (player.getEnergy() <= 0) {
             gameStatus = STATUS_END;
+
         }
+        //якщо закінчилася енергія в суперника
         if (adversary.getEnergy() < 0) {
             adversary.incX(-1);
+            if (!levels.get(level + 1).isOpen()) {
+                newLevel.setVisibility(true);
+            }
+            //якщо суперник зник з екрану
+            if (adversary.getX() + adversary.getWidth() < 0) {
+                adversary.setVisibility(false);
+                newLevel.setVisibility(false);
+            }
         }
 
         player.update();
         adversary.update();
         bg.update();
 
-        if (getGameStatus() == STATUS_END)
+        if (getGameStatus() == STATUS_END) {
             sp.play(SOUND_DONE_THROW_ID, 0.5f, 0.5f, 1, 0, 1);
+            sp.release();
+
+        }
         takts++;
     }
 
@@ -315,7 +375,7 @@ public class GameModel {
         return countSnowbolls;
     }
 
-    private boolean MacroCollision(final GameObject playerObj, GameObject boxObj) {
+    private boolean MacroCollision(final GameObject playerObj, Obstacle boxObj) {
         boolean XColl = false;
         boolean YColl = false;
         //Зміна метода через зміну системи координат
@@ -330,80 +390,34 @@ public class GameModel {
             if ((playerObj.getY() - playerObj.getHeight() <= boxObj.getY()) && (playerObj.getY() >= boxObj.getY() - 100))
                 YColl = true;
         }
-        if ((XColl & YColl)) {
-            if (!boxObj.isBonus()) {
-                gameStatus = STATUS_END;
-                return true;
-            } else if (catchJamp) {
-                sp.play(SOUND_BONUS_ID, 1, 1, 1, 0, 1);
-                int count = r.nextInt(10 - level);
-                for (int i = 0; i < count; i++) {
-                    snowballs.add(new Snowball());
-                }
-
-                countSnowbolls = snowballs.size();
-
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < 10 + level; i++) {
-                            try {
-                                Thread.sleep(16);
-                                player.changeEnergy(1);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
-                    }
-                });
-                thread.start();
-                obstacles.remove(boxObj);
-                return false;
-            }
-        }
-
-
-        return false;
+        if ((XColl & YColl))
+            return true;
+        else
+            return false;
     }
 
     private void dialog() {
-        showDialog = true;
 
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                showDialogPlayer = false;
-                int dialog = r.nextInt(2);
-                switch (dialog) {
-                    case 0:
-                        dialogText = "Cтiй";
-                        break;
-                    case 1:
-                        dialogText = "ТобI пиздець";
-                        break;
-                }
+                String value = (new ArrayList<String>(dialogs.keySet())).get(r.nextInt(dialogs.size()));
+                adversary.getMessage().setText(value);
+                adversary.getMessage().setVisibility(true);
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                showDialogPlayer = true;
-                switch (dialog) {
-                    case 0:
-                        dialogText = "Iди в жопу";
-                        break;
-                    case 1:
-                        dialogText = "Iди нах*й";
-                        break;
-                }
+                adversary.getMessage().setVisibility(false);
+                player.getMessage().setText(dialogs.get(value));
+                player.getMessage().setVisibility(true);
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                showDialog = false;
+                player.getMessage().setVisibility(false);
 
             }
         });
@@ -415,7 +429,7 @@ public class GameModel {
     public void throwSnowball(final Snowball snowball) {
         countSnowbolls--;
         sp.play(SOUND_THROW_ID, 1, 1, 1, 0, 1);
-        show_sn = true;
+        snowball.setVisibility(true);
         //100 - тут координа суперника
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -441,19 +455,20 @@ public class GameModel {
                     }
                 }
                 sp.play(SOUND_DONE_THROW_ID, 0.5f, 0.5f, 1, 0, 1);
-                adversary.changeEnergy(-(levels.size() - level));
+                adversary.changeEnergy(-(4 - level));
                 snowballs.remove(snowball);
-                if (snowballs.size() == 0)
-                    show_sn = false;
 
-                showbla = true;
+                String value = (new ArrayList<String>(dialogs.keySet())).get(r.nextInt(dialogs.size()));
+                adversary.getMessage().setText(value);
+                adversary.getMessage().setVisibility(true);
+
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
-                showbla = false;
+                adversary.getMessage().setVisibility(false);
             }
         });
         thread.start();

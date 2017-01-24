@@ -12,7 +12,15 @@ public abstract class GameObject {
     protected float dx;
     protected int width;
     protected int height;
-    protected boolean isBonus;
+    protected boolean visibility;
+
+    public boolean isVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(boolean visibility) {
+        this.visibility = visibility;
+    }
 
     public void setX(float  x)
     {
@@ -48,7 +56,5 @@ public abstract class GameObject {
         return width;
     }
 
-    public boolean isBonus() {
-        return isBonus;
-    }
+
 }

@@ -34,14 +34,17 @@
             android:onClick="onClick" />
 
         <TextView
-            android:gravity="center"
-            android:text="23"
             android:id="@+id/snowballs_count"
             android:layout_width="@dimen/button_height"
-            android:layout_height="@dimen/button_height"/>
+            android:layout_height="@dimen/button_height"
+            android:gravity="center"
+            android:text="23" />
     </FrameLayout>
 
+
+
     <LinearLayout
+        android:id="@+id/progress_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/button_height"
         android:layout_toLeftOf="@+id/catch_bootle"
@@ -65,9 +68,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:typeface="monospace"
-            android:textSize="30dp" />
+            android:textSize="30dp"
+            android:typeface="monospace" />
     </LinearLayout>
+    <FrameLayout
+        android:layout_width="@dimen/button_height"
+        android:layout_height="@dimen/button_height"
+        android:layout_below="@+id/progress_layout"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/health_layout">
+
+        <ImageButton
+            android:id="@+id/health_image"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="@dimen/button_height"
+            android:background="@drawable/heart"
+            android:onClick="onClick" />
+
+        <TextView
+            android:textColor="@android:color/white"
+            android:id="@+id/health_text"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="@dimen/button_height"
+            android:gravity="center"
+            android:text="23" />
+    </FrameLayout>
 
 
 </RelativeLayout>

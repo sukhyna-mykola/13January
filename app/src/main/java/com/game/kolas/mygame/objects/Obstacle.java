@@ -3,39 +3,38 @@ package com.game.kolas.mygame.objects;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import com.game.kolas.mygame.Animation;
-
 import java.util.Random;
 
-import static com.game.kolas.mygame.GameSurface.HEIGHT;
+import static com.game.kolas.mygame.views.GameSurface.HEIGHT;
 
 /**
  * Created by kolas on 22.11.2015.
  */
 public class Obstacle extends GameObject {
-    private int speed;
+    private float speed;
     private Bitmap image;
+    protected boolean isBonus;
 
     private Random rand = new Random();
     private Animation animation = new Animation();
     private Bitmap spritesheet;
 
 
-    public Obstacle(Bitmap res, int speed, boolean b) {
+    public Obstacle(Bitmap res, float speed, boolean b) {
         this.isBonus = b;
         this.image = res;
         this.speed = speed;
         this.height = 30;
         this.x = 1000;
+        this.visibility = true;
 
         if (isBonus == false) {
             this.y = (height + MIN_Y_POSITION);
 
         } else {
-            this.y = 270 + rand.nextInt(110);
+            this.y = 300 + rand.nextInt(150);
         }
 
-        if (this.speed > 40) this.speed = 40;
     }
 
     public void update() {
@@ -49,7 +48,9 @@ public class Obstacle extends GameObject {
         }
     }
 
-
+    public boolean isBonus() {
+        return isBonus;
+    }
     @Override
     public int getWidth() {
         return width - 10;

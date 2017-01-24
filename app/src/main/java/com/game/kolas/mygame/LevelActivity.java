@@ -1,7 +1,6 @@
 package com.game.kolas.mygame;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -19,7 +18,7 @@ import com.game.kolas.mygame.objects.Level;
 
 import java.util.List;
 
-import static com.game.kolas.mygame.DataGame.levels;
+import static com.game.kolas.mygame.data.DataGame.levels;
 import static com.game.kolas.mygame.GameActivity.LEVEL;
 
 

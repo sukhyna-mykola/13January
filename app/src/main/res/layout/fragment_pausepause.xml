@@ -4,7 +4,7 @@
     android:orientation="vertical">
 
 
-    <com.game.kolas.mygame.CustomFontTextView
+    <com.game.kolas.mygame.views.CustomFontTextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,7 +12,7 @@
         android:layout_margin="16dp"
         android:gravity="center" />
 
-    <com.game.kolas.mygame.CustomFontButton
+    <com.game.kolas.mygame.views.CustomFontButton
         android:id="@+id/play"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         android:background="@drawable/butt_selt"
         android:text="@string/continue_game" />
 
-    <com.game.kolas.mygame.CustomFontButton
+    <com.game.kolas.mygame.views.CustomFontButton
         android:id="@+id/newgame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
         android:background="@drawable/butt_selt"
         android:text="@string/repeat_game" />
 
-    <com.game.kolas.mygame.CustomFontButton
+    <com.game.kolas.mygame.views.CustomFontButton
         android:id="@+id/mainmenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

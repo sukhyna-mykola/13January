@@ -1,11 +1,11 @@
-package com.game.kolas.mygame;
+package com.game.kolas.mygame.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-class DBHelper extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper {
 
     public static final String LEVEL_TABLE = "LEVEL_TABLE";
     public static final String DB_NAME = "DB";

@@ -1,4 +1,4 @@
-package com.game.kolas.mygame;
+package com.game.kolas.mygame.views;
 
 import android.content.Context;
 import android.graphics.Typeface;

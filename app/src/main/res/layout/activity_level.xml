@@ -13,7 +13,7 @@
     tools:context="com.game.kolas.mygame.LevelActivity"
     android:gravity="center">
 
-    <com.game.kolas.mygame.CustomFontTextView
+    <com.game.kolas.mygame.views.CustomFontTextView
         android:textSize="40sp"
         android:gravity="center"
         android:textColor="@android:color/white"

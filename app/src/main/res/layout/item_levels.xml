@@ -16,7 +16,7 @@
             android:layout_height="match_parent">
 
 
-            <com.game.kolas.mygame.CustomFontTextView
+            <com.game.kolas.mygame.views.CustomFontTextView
                 android:id="@+id/best_time_on_level"
                 android:gravity="center"
                 android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_gravity="center" />
 
-            <com.game.kolas.mygame.CustomFontTextView
+            <com.game.kolas.mygame.views.CustomFontTextView
                 android:id="@+id/desc_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

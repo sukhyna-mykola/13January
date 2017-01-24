@@ -1,4 +1,4 @@
-package com.game.kolas.mygame;
+package com.game.kolas.mygame.objects;
 
 /**
  * Created by kolas on 07.11.2015.
@@ -10,15 +10,16 @@ import android.graphics.Canvas;
 import java.util.ArrayList;
 
 public class Background {
-    private Bitmap [] images=new Bitmap[2];
-    int pos= 0;
+    private Bitmap [] images;
+    int pos;
     int max ;
     private int x, dx;
     public Background(ArrayList<Bitmap> listBackgroundImages) {
         images  = new Bitmap[listBackgroundImages.size()];
         listBackgroundImages.toArray(images);
         max = listBackgroundImages.size();
-        dx = GameSurface.MOVESPEED;
+        pos=0;
+        dx = -3;
     }
 
 

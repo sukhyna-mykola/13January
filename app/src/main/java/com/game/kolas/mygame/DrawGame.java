@@ -35,12 +35,6 @@ public class DrawGame extends Thread {
     public void run() {
 
         while (runFlag) {
-            while (pause)
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
             gameActivity.update();
 
@@ -48,6 +42,13 @@ public class DrawGame extends Thread {
                 this.sleep(FSP);
             } catch (Exception e) {
             }
+
+            while (pause)
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
 
         }

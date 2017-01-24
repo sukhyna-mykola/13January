@@ -6,13 +6,14 @@ package com.game.kolas.mygame.objects;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.Log;
-
-import com.game.kolas.mygame.Animation;
 
 import static android.content.ContentValues.TAG;
 import static com.game.kolas.mygame.DrawGame.FSP;
-import static com.game.kolas.mygame.GameSurface.HEIGHT;
+import static com.game.kolas.mygame.views.GameSurface.HEIGHT;
 
 
 public class Player extends GameObject {
@@ -26,6 +27,8 @@ public class Player extends GameObject {
     private Bitmap spritesheet;
 
     private int energy;
+    private Message message;
+    private int health;
 
 
     public Player(Bitmap res, int w, int h, int numFrames,int heightJump) {
@@ -35,6 +38,8 @@ public class Player extends GameObject {
         this.width = w;
         this.energy = 100;
         this.heightJump = heightJump;
+        this.visibility = true;
+       
 
         Bitmap[] image = new Bitmap[numFrames];
         this.spritesheet = res;
@@ -43,6 +48,14 @@ public class Player extends GameObject {
         }
         animation.setFrames(image);
         animation.setDelay(40);
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public void setEnergy(int energy) {
@@ -92,14 +105,43 @@ public class Player extends GameObject {
         this.energy += inc;
     }
 
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
+    }
+
     public void update() {
+        if(this.isVisibility()){
         animation.update();
+            if(message.isVisibility()){
+                message.setX(x+width/3*2);
+                message.setY(y);
+            }
+        }
     }
 
 
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, Paint p) {
         canvas.drawBitmap(animation.getImage(), x, HEIGHT - y, null);
 
+
+       RectF rect = new RectF(x+(width / 2 - energy / 2), HEIGHT - (y + 30), x+(width / 2 + energy / 2), HEIGHT - (y + 10));
+
+        if (energy < 30) {
+            p.setColor(Color.RED);
+            canvas.drawRoundRect(rect, 5, 5, p);
+        } else if (energy >= 30 && energy < 70) {
+            p.setColor(Color.YELLOW);
+            canvas.drawRoundRect(rect, 5, 5, p);
+        } else if (energy >= 70) {
+            p.setColor(Color.GREEN);
+            canvas.drawRoundRect(rect, 5, 5, p);
+        }
+        if(message.isVisibility())
+            message.draw(canvas,p);
     }
 
     public void setPause(boolean pause) {
