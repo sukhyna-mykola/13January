@@ -42,13 +42,13 @@ public class StartActivity extends AppCompatActivity {
             saveIsCreatedBD();
         }
 
-        sound = sPref.getBoolean(SOUND,true);
+        sound = sPref.getBoolean(SOUND,false);
 
         readFromBD();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(StartActivity.this,MenuActivity.class));
+                setResult(RESULT_OK);
                 finish();
             }
         },2000);

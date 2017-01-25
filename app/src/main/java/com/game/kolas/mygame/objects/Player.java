@@ -102,7 +102,7 @@ public class Player extends GameObject {
         return energy;
     }
 
-    public void changeEnergy(float inc) {
+    public void addToEnergy(float inc) {
         this.energy += inc;
     }
 
@@ -150,7 +150,11 @@ public class Player extends GameObject {
         this.pause = pause;
     }
 
-    public void incX(float inc) {
+    public void addToX(float inc) {
         x += inc;
+    }
+
+    public void addToHealth(float inc){
+        health+=inc;
     }
 }

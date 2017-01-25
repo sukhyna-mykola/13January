@@ -6,6 +6,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by kolas on 07.11.2015.
  */
@@ -61,6 +63,7 @@ public class DrawGame extends Thread {
             }
 
         }
+        Log.d(TAG,"end");
 
     }
 }

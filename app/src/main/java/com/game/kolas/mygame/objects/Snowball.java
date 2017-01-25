@@ -39,4 +39,5 @@ public class Snowball extends GameObject {
         canvas.drawCircle(x, HEIGHT - y, 10, p);
 
     }
+
 }

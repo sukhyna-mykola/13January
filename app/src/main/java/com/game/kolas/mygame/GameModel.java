@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import com.game.kolas.mygame.objects.Background;
 import com.game.kolas.mygame.objects.GameObject;
@@ -20,12 +21,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import static android.content.ContentValues.TAG;
 import static android.graphics.BitmapFactory.decodeResource;
 import static com.game.kolas.mygame.DrawGame.FPS;
 import static com.game.kolas.mygame.data.DataGame.dialogs;
 import static com.game.kolas.mygame.data.DataGame.levels;
 import static com.game.kolas.mygame.views.GameSurface.HEIGHT;
 import static com.game.kolas.mygame.views.GameSurface.WIDTH;
+import static java.lang.Thread.sleep;
 
 /**
  * Created by mykola on 17.01.17.
@@ -63,12 +66,12 @@ public class GameModel {
     private float obstacleStartTime;
     boolean catchJamp;
     private long takts;
-    long incObstaclesSpeepTime;
-    long addNewBonusTime;
-    long decEnergyTime;
+
+    long lastBonusTime;
+
     private Resources resources;
     private float obstaclesSpeed;
-    private float whenNewBonusTime;
+    private float nextBonusTime;
 
     private Message newLevel;
     private SoundPool sp;
@@ -114,7 +117,7 @@ public class GameModel {
         this.resources = context.getResources();
         this.level = level;
 
-        newLevel = new Message(decodeResource(resources, R.drawable.button), WIDTH / 2 - 200, HEIGHT / 3 * 2, 400, 100, 0, 0);
+        newLevel = new Message(decodeResource(resources, R.drawable.button), WIDTH / 2 - 200, HEIGHT / 2 + 100, 400, 100, 0, 0);
         newLevel.setText("Вiдкрито рiвень " + (level + 2));
 
         initGameData();
@@ -194,16 +197,14 @@ public class GameModel {
 
         gameStatus = STATUS_GAMING;
 
-        player.setHealth(3);
+        player.setHealth(2);
 
         obstaclesSpeed = (float) (12 - this.level / 2.0);
 
         catchJamp = false;
         takts = 0;
-        incObstaclesSpeepTime = 0;
-        addNewBonusTime = 0;
-        decEnergyTime = 0;
-        whenNewBonusTime = 0;
+        lastBonusTime = 0;
+        nextBonusTime = 0;
         countSnowbolls = 0;
 
 
@@ -237,27 +238,28 @@ public class GameModel {
 
 
         if (player.getX() < player.getEnergy() * 2 + adversary.getWidth())
-            player.incX(1);
+            player.addToX(1);
         else
-            player.incX(-1);
+            player.addToX(-1);
 
-        //зменшення еергії кожні 1c.
-        long checkTime = takts - decEnergyTime;
-        if (checkTime > FPS) {//~1s
-            player.changeEnergy(-1f);
-            decEnergyTime = takts;
+        //зменшення енергії кожну 1c.
+        if (takts % FPS == 0) {//~1s
+            player.addToEnergy(-1.5f);
+        }
+
+        //додати 1 health кожну хвилину
+        if (takts % (FPS * 60) == 0) {//~60s
+            player.addToHealth(1);
         }
 
         //збільшення швидкості перешкод кожні 20с.
-        checkTime = takts - incObstaclesSpeepTime;
-        if (checkTime > FPS * 20) {//~20s.
+        if (takts % (FPS * 20) == 0) {//~20s.
             if (adversary.isVisibility())
                 dialog();
 
-            if (obstaclesSpeed >= 9)
-                obstaclesSpeed -= 0.5;
+            if (obstaclesSpeed >= 6)
+                obstaclesSpeed -= 0.4;
 
-            incObstaclesSpeepTime = takts;
         }
 
         //Додавання нової перешкоди
@@ -268,11 +270,11 @@ public class GameModel {
         } else addNewObstacle();
 
         //бонус
-        checkTime = takts - addNewBonusTime;
-        if (checkTime > whenNewBonusTime) {
+        long checkTime = takts - lastBonusTime;
+        if (checkTime > nextBonusTime) {
             bonuses.add(new Obstacle(decodeResource(resources, R.drawable.beer), 5, true));
-            whenNewBonusTime = player.getEnergy() * 2 + r.nextInt(50);
-            addNewBonusTime = takts;
+            nextBonusTime = player.getEnergy() * 2 + r.nextInt(50);
+            lastBonusTime = takts;
         }
 
 
@@ -288,7 +290,7 @@ public class GameModel {
             if (obstacles.get(i).isVisibility())
                 if (MacroCollision(player, obstacles.get(i))) {
                     obstacles.get(i).setVisibility(false);
-                    player.changeEnergy(-(level + 5));
+                    player.addToEnergy(-(level + 5));
                     if (player.getHealth() > 0) {
                         player.setHealth(player.getHealth() - 1);
                         sp.play(SOUND_DONE_THROW_ID, 0.5f, 0.5f, 1, 0, 1);
@@ -313,8 +315,8 @@ public class GameModel {
                         bonuses.get(i).setVisibility(false);
                         sp.play(SOUND_BONUS_ID, 1, 1, 1, 0, 1);
 
-                        player.changeEnergy(5 + level);
-                        int count = r.nextInt(5 + level);
+                        player.addToEnergy(5 + level);
+                        int count = r.nextInt(levels.size())+1;
 
                         for (int j = 0; j < count; j++) {
                             snowballs.add(new Snowball());
@@ -333,7 +335,7 @@ public class GameModel {
         }
         //якщо закінчилася енергія в суперника
         if (adversary.getEnergy() < 0) {
-            adversary.incX(-1);
+            adversary.addToX(-1);
             if (level + 1 != levels.size())
                 if (!levels.get(level + 1).isOpen()) {
                     newLevel.setVisibility(true);
@@ -397,27 +399,27 @@ public class GameModel {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                String value = (new ArrayList<String>(dialogs.keySet())).get(r.nextInt(dialogs.size()));
-                adversary.getMessage().setText(value);
-                adversary.getMessage().setVisibility(true);
                 try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                adversary.getMessage().setVisibility(false);
-                player.getMessage().setText(dialogs.get(value));
-                player.getMessage().setVisibility(true);
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                player.getMessage().setVisibility(false);
+                    String value = (new ArrayList<String>(dialogs.keySet())).get(r.nextInt(dialogs.size()));
+                    adversary.getMessage().setText(value);
+                    adversary.getMessage().setVisibility(true);
 
+                    sleep(2000);
+
+                    adversary.getMessage().setVisibility(false);
+                    player.getMessage().setText(dialogs.get(value));
+                    player.getMessage().setVisibility(true);
+
+                    sleep(2000);
+
+                    player.getMessage().setVisibility(false);
+
+                } catch (Exception e) {
+                }
             }
         });
         thread.setDaemon(true);
+
         thread.start();
 
 
@@ -432,41 +434,37 @@ public class GameModel {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-
-                snowball.setX((player.getX() + player.getWidth()));
-                float x_adversary = adversary.getWidth() / 2;
-                float y = player.getY() - 40;
-                float center = (snowball.getX() - x_adversary - 10) / 2;
-                float shift = (snowball.getX() + x_adversary - 10) / 2;
-                float k = (float) (1 / Math.pow((center), 2));
-
-
-                while (snowball.getX() > x_adversary) {
-
-                    snowball.setX((float) (snowball.getX() - (2.5 - snowball.getAngle())));
-                    snowball.setY((float) (y + snowball.getAngle() * 200 * (1 - Math.pow((snowball.getX() - shift), 2) * k)));
-
-                    try {
-                        Thread.sleep(5);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                sp.play(SOUND_DONE_THROW_ID, 0.5f, 0.5f, 1, 0, 1);
-                adversary.changeEnergy(-(4 - level));
-                snowballs.remove(snowball);
-
-                String value = (new ArrayList<String>(dialogs.keySet())).get(r.nextInt(dialogs.size()));
-                adversary.getMessage().setText(value);
-                adversary.getMessage().setVisibility(true);
-
                 try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                    snowball.setX((player.getX() + player.getWidth()));
+                    float x_adversary = adversary.getWidth() / 2;
+                    float y = player.getY() - 40;
+                    float center = (snowball.getX() - x_adversary - 10) / 2;
+                    float shift = (snowball.getX() + x_adversary - 10) / 2;
+                    float k = (float) (1 / Math.pow((center), 2));
 
-                adversary.getMessage().setVisibility(false);
+
+                    while (snowball.getX() > x_adversary) {
+
+                        snowball.setX((float) (snowball.getX() - (2.5 - snowball.getAngle())));
+                        snowball.setY((float) (y + snowball.getAngle() * 200 * (1 - Math.pow((snowball.getX() - shift), 2) * k)));
+
+                        sleep(5);
+
+                    }
+                    sp.play(SOUND_DONE_THROW_ID, 0.5f, 0.5f, 1, 0, 1);
+                    adversary.addToEnergy(-(levels.size() - level));
+                    snowballs.remove(snowball);
+
+                    String value = (new ArrayList<String>(dialogs.keySet())).get(r.nextInt(dialogs.size()));
+                    adversary.getMessage().setText(value);
+                    adversary.getMessage().setVisibility(true);
+
+                    sleep(2000);
+
+                    adversary.getMessage().setVisibility(false);
+
+                } catch (Exception e) {
+                }
             }
         });
         thread.setDaemon(true);

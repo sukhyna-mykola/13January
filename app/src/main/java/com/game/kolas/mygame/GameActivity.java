@@ -172,7 +172,7 @@ public class GameActivity extends AppCompatActivity implements DialogMethods, Vi
             }
         });
 
-        if (model.getCountSnowbolls() == 0 && model.getAdversary().isVisibility()) {
+        if (model.getCountSnowbolls() == 0 || !model.getAdversary().isVisibility()) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -316,6 +316,8 @@ public class GameActivity extends AppCompatActivity implements DialogMethods, Vi
 
             }
         }
+        throwButton.setVisibility(View.GONE);
+        countSnowballs.setText("");
         return true;
     }
 

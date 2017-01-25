@@ -14,6 +14,15 @@ import com.game.kolas.mygame.views.CustomFontTextView;
 
 public class MenuActivity extends AppCompatActivity implements View.OnClickListener {
     private CustomFontTextView changeDialogs;
+    public static boolean running;
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +37,8 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
         });
+        if (!running)
+            startActivityForResult(new Intent(this, StartActivity.class), 0);
     }
 
 
@@ -50,5 +61,10 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK)
+            setRunning(true);
+    }
 }

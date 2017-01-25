@@ -103,11 +103,13 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
                     bonus.draw(canvas);
             }
 
+            if (model.getPlayer().isVisibility())
+                model.getPlayer().draw(canvas, p);
+
             if (model.getAdversary().isVisibility())
                 model.getAdversary().draw(canvas, p);
 
-            if (model.getPlayer().isVisibility())
-                model.getPlayer().draw(canvas, p);
+
 
 
             for (Snowball snowball : model.getSnowballs()) {
