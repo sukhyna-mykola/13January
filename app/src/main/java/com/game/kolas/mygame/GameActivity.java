@@ -121,6 +121,7 @@ public class GameActivity extends AppCompatActivity implements DialogMethods, Vi
         chronometer.start();
         thread.start();
 
+        overridePendingTransition(R.anim.activity_down_up_enter, R.anim.activity_down_up_exit);
 
     }
 
@@ -342,4 +343,15 @@ public class GameActivity extends AppCompatActivity implements DialogMethods, Vi
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, MenuActivity.class));
+    }
 }

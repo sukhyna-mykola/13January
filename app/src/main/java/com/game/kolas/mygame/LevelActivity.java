@@ -38,6 +38,7 @@ public class LevelActivity extends Activity {
         horizontal_recycler_view.setLayoutManager(horizontalLayoutManagaer);
         horizontal_recycler_view.setAdapter(horizontalAdapter);
 
+        overridePendingTransition(R.anim.activity_down_up_enter, R.anim.activity_down_up_exit);
 
     }
 
@@ -111,7 +112,6 @@ public class LevelActivity extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
         startActivity(new Intent(this, MenuActivity.class));
     }
 }

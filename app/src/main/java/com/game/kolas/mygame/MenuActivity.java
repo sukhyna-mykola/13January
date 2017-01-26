@@ -39,6 +39,8 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         });
         if (!running)
             startActivityForResult(new Intent(this, StartActivity.class), 0);
+
+        overridePendingTransition(R.anim.activity_down_up_enter, R.anim.activity_down_up_exit);
     }
 
 

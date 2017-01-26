@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import static com.game.kolas.mygame.data.DataGame.levels;
 import static com.game.kolas.mygame.dialogs.DialogSetting.MY_SETTINGS;
 import static com.game.kolas.mygame.dialogs.DialogSetting.SOUND;
 import static com.game.kolas.mygame.dialogs.DialogSetting.sound;
+import static java.lang.Thread.sleep;
 
 
 public class StartActivity extends AppCompatActivity {
@@ -34,25 +36,8 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_game);
-
-        sPref = getSharedPreferences(MY_SETTINGS,
-                Context.MODE_PRIVATE);
-        if (!checkIsCreatedBD()) {
-            putToBD();
-            saveIsCreatedBD();
-        }
-
-        sound = sPref.getBoolean(SOUND,false);
-
-        readFromBD();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setResult(RESULT_OK);
-                finish();
-            }
-        },2000);
-
+        new Execute().execute();
+        
     }
 
 
@@ -105,6 +90,37 @@ public class StartActivity extends AppCompatActivity {
         c.close();
         db.close();
         dbHelper.close();
+    }
+
+    private class Execute extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            sPref = getSharedPreferences(MY_SETTINGS,
+                    Context.MODE_PRIVATE);
+            if (!checkIsCreatedBD()) {
+                putToBD();
+                saveIsCreatedBD();
+            }
+
+            sound = sPref.getBoolean(SOUND,false);
+
+            readFromBD();
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            setResult(RESULT_OK);
+            finish();
+        }
     }
 
 }
