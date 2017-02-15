@@ -24,7 +24,7 @@ public class Player extends GameObject {
 
     boolean pause = false;
 
-    private Animation animation ;
+    private Animation animation;
     private Bitmap spritesheet;
 
     private float energy;
@@ -34,7 +34,7 @@ public class Player extends GameObject {
     private RectF rect;
 
 
-    public Player(Bitmap res, int w, int h, int numFrames, int heightJump,int pauseFrame) {
+    public Player(Bitmap res, int w, int h, int numFrames, int heightJump, int pauseFrame) {
 
         this.y = h + MIN_Y_POSITION;
         this.height = h;
@@ -142,6 +142,9 @@ public class Player extends GameObject {
             p.setColor(Color.GREEN);
             canvas.drawRoundRect(rect, 5, 5, p);
         }
+        p.setColor(Color.BLACK);
+        p.setTextSize(15);
+        canvas.drawText((int)(energy) + "%", x + width / 2, HEIGHT - (y + 15), p);
         if (message.isVisibility())
             message.draw(canvas, p);
     }
@@ -154,7 +157,7 @@ public class Player extends GameObject {
         x += inc;
     }
 
-    public void addToHealth(float inc){
-        health+=inc;
+    public void addToHealth(float inc) {
+        health += inc;
     }
 }
