@@ -4,8 +4,6 @@ import com.game.kolas.mygame.R;
 import com.game.kolas.mygame.objects.Level;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -17,17 +15,18 @@ public class DataGame {
     public static ArrayList<Level> levels = new ArrayList<>();
 
     static {
-        levels.add(new Level(0, true, "Сова", R.drawable.owl, "00:00"));
-        levels.add(new Level(1, false, "Ч. смерть", R.drawable.petardy, "00:00"));
-        levels.add(new Level(2, false, "Мисливець", R.drawable.hunter, "00:00"));
-        levels.add(new Level(3, false, "Вершник", R.drawable.horse, "00:00"));
+        levels.add(new Level(0, true, "Сова", R.drawable.level_owl, "00:00"));
+        levels.add(new Level(1, false, "Байкер", R.drawable.level_biker, "00:00"));
+        levels.add(new Level(2, false, "Мисливець", R.drawable.level_hunter, "00:00"));
+        levels.add(new Level(3, false, "Вершник", R.drawable.level_horse, "00:00"));
     }
 
     public static final LinkedHashMap<String, String> dialogs = new LinkedHashMap<>();
 
     static {
-        dialogs.put("Cтiй гівнюк", "Відчепись");
+        dialogs.put("Cтояти гівнюк", "Відчепись");
         dialogs.put("Тобi капець", "Iди в *опу");
+        dialogs.put("Стій скотиняка", "Дідька лисого");
     }
 
     public static void updateDialogs(){
@@ -35,6 +34,7 @@ public class DataGame {
         dialogs.put("Cтiй уїбень", " Отїбись ");
         dialogs.put("Тобi пизда", "Iди нахуй");
         dialogs.put("Віддай ворота, сука", "   Соси   ");
+        dialogs.put("Щас захуярю", "Іди в пізду");
 
     }
 }

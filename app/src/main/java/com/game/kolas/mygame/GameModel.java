@@ -8,7 +8,6 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import com.game.kolas.mygame.objects.Background;
 import com.game.kolas.mygame.objects.GameObject;
@@ -18,10 +17,8 @@ import com.game.kolas.mygame.objects.Player;
 import com.game.kolas.mygame.objects.Snowball;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
-import static android.content.ContentValues.TAG;
 import static android.graphics.BitmapFactory.decodeResource;
 import static com.game.kolas.mygame.DrawGame.FPS;
 import static com.game.kolas.mygame.data.DataGame.dialogs;
@@ -117,7 +114,7 @@ public class GameModel {
         this.resources = context.getResources();
         this.level = level;
 
-        newLevel = new Message(decodeResource(resources, R.drawable.button), WIDTH / 2 - 200, HEIGHT / 2 + 100, 400, 100, 0, 0);
+        newLevel = new Message(decodeResource(resources, R.drawable.img_button), WIDTH / 2 - 200, HEIGHT / 2 + 100, 400, 100, 0, 0);
         newLevel.setText("Вiдкрито рiвень " + (level + 2));
 
         initGameData();
@@ -186,9 +183,9 @@ public class GameModel {
         adversary.setMessage(new Message(decodeResource(resources, R.drawable.template_dialog_text), (int) (adversary.getX() + adversary.getWidth() / 3 * 2), (int) (adversary.getY()), 200, 50, 15, 0));
 
         ArrayList<Bitmap> listImages = new ArrayList<>();
-        listImages.add(decodeResource(resources, R.drawable.first));
-        listImages.add(decodeResource(resources, R.drawable.two));
-        listImages.add(decodeResource(resources, R.drawable.three));
+        listImages.add(decodeResource(resources, R.drawable.background_first));
+        listImages.add(decodeResource(resources, R.drawable.background_two));
+        listImages.add(decodeResource(resources, R.drawable.background_three));
         bg = new Background(listImages);
 
         obstacles = new ArrayList<>();
@@ -272,7 +269,7 @@ public class GameModel {
         //бонус
         long checkTime = takts - lastBonusTime;
         if (checkTime > nextBonusTime) {
-            bonuses.add(new Obstacle(decodeResource(resources, R.drawable.beer), 5, true));
+            bonuses.add(new Obstacle(decodeResource(resources, R.drawable.bonus_beer), 5, true));
             nextBonusTime = player.getEnergy() * 2 + r.nextInt(50);
             lastBonusTime = takts;
         }
@@ -284,7 +281,7 @@ public class GameModel {
                 if (obstacles.get(i).getX() < adversary.getWidth() / 2 + 40 && obstacles.get(i).isVisibility() && !adversary.isJumpFlag())
                     jump(adversary);
             }
-            //update obstacle
+            //update obstacle_snow
             obstacles.get(i).update();
 
             if (obstacles.get(i).isVisibility())
@@ -363,9 +360,9 @@ public class GameModel {
 
     private void addNewObstacle() {
         if (r.nextBoolean())
-            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.obstacle), obstaclesSpeed, false));
+            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.obstacle_snow), obstaclesSpeed, false));
         else
-            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.wood), obstaclesSpeed, false));
+            obstacles.add(new Obstacle(decodeResource(resources, R.drawable.obstacle_wood), obstaclesSpeed, false));
         obstacleStartTime = (float) r.nextInt(WIDTH / 2) + (player.getWidth() + 50);
     }
 

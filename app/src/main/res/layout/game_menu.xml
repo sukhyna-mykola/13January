@@ -71,7 +71,7 @@
                 android:id="@+id/health_image"
                 android:layout_width="@dimen/button_height"
                 android:layout_height="@dimen/button_height"
-                android:background="@drawable/heart"
+                android:background="@drawable/img_heart"
                 android:onClick="onClick" />
             <com.game.kolas.mygame.views.CustomFontTextView
                 android:id="@+id/health_text"

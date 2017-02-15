@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.game.kolas.mygame.data.DataGame;
 import com.game.kolas.mygame.dialogs.DialogAbout;
+import com.game.kolas.mygame.dialogs.DialogPassword;
 import com.game.kolas.mygame.dialogs.DialogSetting;
 import com.game.kolas.mygame.views.CustomFontTextView;
 
@@ -32,8 +33,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         changeDialogs.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                DataGame.updateDialogs();
-                Toast.makeText(MenuActivity.this, R.string.app_name, Toast.LENGTH_SHORT).show();
+                getSupportFragmentManager().beginTransaction().add(new DialogPassword(),"PASSWORD_DIALOG").commit();
                 return true;
             }
         });

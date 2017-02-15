@@ -5,7 +5,8 @@
     tools:context="com.game.kolas.mygame.MenuActivity"
     android:orientation="vertical"
     android:gravity="center_vertical|center_horizontal"
-    android:background="@drawable/fon">
+    android:background="@drawable/background"
+    android:weightSum="8">
 
     <com.game.kolas.mygame.views.CustomFontTextView
         android:id="@+id/change_dialogs"
@@ -15,13 +16,15 @@
         android:layout_marginBottom="16dp"
         android:textColor="@android:color/white"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp"
+        android:layout_weight="2"/>
 
 
     <com.game.kolas.mygame.views.CustomFontButton
         android:textSize="20sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/play_text"
         android:id="@+id/button_play"
         android:onClick="onClick"
@@ -33,7 +36,8 @@
         android:textSize="20sp"
         android:onClick="onClick"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/settings_text"
         android:id="@+id/button_settings"
         android:layout_gravity="center_horizontal"
@@ -44,7 +48,8 @@
         android:textSize="20sp"
         android:onClick="onClick"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/about_text"
         android:id="@+id/button_about"
         android:layout_gravity="center_horizontal"
@@ -55,7 +60,8 @@
         android:textSize="20sp"
         android:onClick="onClick"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="@string/exit_text"
         android:id="@+id/button_exit"
         android:layout_gravity="center_horizontal"

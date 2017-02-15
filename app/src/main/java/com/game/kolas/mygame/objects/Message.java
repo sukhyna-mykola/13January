@@ -58,8 +58,5 @@ public class Message extends GameObject {
         canvas.drawBitmap(background, x, HEIGHT-(y+height), null);
         canvas.drawText(text, (x+width/2+shiftX), HEIGHT - (y+height/2+shiftY), p);
     }
-    public void draw(Canvas canvas) {
 
-        canvas.drawBitmap(background, x, HEIGHT-(y+height), null);
-    }
 }
