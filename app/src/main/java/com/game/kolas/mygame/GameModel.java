@@ -115,7 +115,6 @@ public class GameModel {
         this.level = level;
 
         newLevel = new Message(decodeResource(resources, R.drawable.img_button), WIDTH / 2 - 200, HEIGHT / 2 + 100, 400, 100, 0, 0);
-        newLevel.setText("Вiдкрито рiвень " + (level + 2));
 
         initGameData();
 
@@ -204,7 +203,7 @@ public class GameModel {
         nextBonusTime = 0;
         countSnowbolls = 0;
 
-
+        adversary.setEnergy(3);
     }
 
     public ArrayList<Obstacle> getBonuses() {
@@ -313,7 +312,7 @@ public class GameModel {
                         sp.play(SOUND_BONUS_ID, 1, 1, 1, 0, 1);
 
                         player.addToEnergy(5 + level);
-                        int count = r.nextInt(levels.size())+1;
+                        int count = r.nextInt(levels.size()) + 1;
 
                         for (int j = 0; j < count; j++) {
                             snowballs.add(new Snowball());
@@ -333,10 +332,16 @@ public class GameModel {
         //якщо закінчилася енергія в суперника
         if (adversary.getEnergy() < 0) {
             adversary.addToX(-1);
-            if (level + 1 != levels.size())
+
+            if (level + 1 != levels.size()) {
                 if (!levels.get(level + 1).isOpen()) {
                     newLevel.setVisibility(true);
+                    newLevel.setText("Вiдкрито рiвень " + (level + 2));
                 }
+            } else {
+                newLevel.setVisibility(true);
+                newLevel.setText("Всі рівні пройдено");
+            }
             //якщо суперник зник з екрану
             if (adversary.getX() + adversary.getWidth() < 0) {
                 adversary.setVisibility(false);
