@@ -104,6 +104,8 @@ public class Player extends GameObject {
 
     public void addToEnergy(float inc) {
         this.energy += inc;
+        if (this.energy > 100)
+            this.energy = 100;
     }
 
     public Message getMessage() {
@@ -119,6 +121,7 @@ public class Player extends GameObject {
             jump();
 
             animation.update();
+
             if (message.isVisibility()) {
                 message.setX(x + width / 3 * 2);
                 message.setY(y);
@@ -144,7 +147,7 @@ public class Player extends GameObject {
         }
         p.setColor(Color.BLACK);
         p.setTextSize(15);
-        canvas.drawText((int)(energy) + "%", x + width / 2, HEIGHT - (y + 15), p);
+        canvas.drawText((int) (energy) + "%", x + width / 2, HEIGHT - (y + 15), p);
         if (message.isVisibility())
             message.draw(canvas, p);
     }

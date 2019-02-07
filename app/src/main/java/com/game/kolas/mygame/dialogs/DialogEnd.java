@@ -53,6 +53,7 @@ public class DialogEnd extends DialogFragment implements View.OnClickListener {
         setThistime((CustomFontTextView) v.findViewById(R.id.timetext));
         AlertDialog dialog = new AlertDialog.Builder(getContext()).setView(v).create();
         dialog.setCanceledOnTouchOutside(false);
+        setCancelable(false);
         return dialog;
 
     }

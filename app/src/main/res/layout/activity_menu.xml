@@ -2,70 +2,76 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.game.kolas.mygame.MenuActivity"
-    android:orientation="vertical"
-    android:gravity="center_vertical|center_horizontal"
     android:background="@drawable/background"
-    android:weightSum="8">
-
-    <com.game.kolas.mygame.views.CustomFontTextView
-        android:id="@+id/change_dialogs"
-        android:textSize="40sp"
-        android:text="@string/app_name"
-        android:gravity="center"
-        android:layout_marginBottom="16dp"
-        android:textColor="@android:color/white"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"/>
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical"
+    android:weightSum="8"
+    tools:context="com.game.kolas.mygame.MenuActivity">
 
 
-    <com.game.kolas.mygame.views.CustomFontButton
-        android:textSize="20sp"
+
+    <GridLayout
+        android:columnCount="1"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="@string/play_text"
-        android:id="@+id/button_play"
-        android:onClick="onClick"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/butt_selt"
-        android:layout_marginBottom="5dp" />
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
 
-    <com.game.kolas.mygame.views.CustomFontButton
-        android:textSize="20sp"
-        android:onClick="onClick"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="@string/settings_text"
-        android:id="@+id/button_settings"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/butt_selt"
-        android:layout_marginBottom="5dp" />
+        <com.game.kolas.mygame.views.CustomFontTextView
+            android:id="@+id/change_dialogs"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="fill_horizontal"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            android:textSize="40sp" />
 
-    <com.game.kolas.mygame.views.CustomFontButton
-        android:textSize="20sp"
-        android:onClick="onClick"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="@string/about_text"
-        android:id="@+id/button_about"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/butt_selt"
-        android:layout_marginBottom="5dp" />
+        <com.game.kolas.mygame.views.CustomFontButton
+            android:id="@+id/button_play"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/butt_selt"
+            android:onClick="onClick"
+            android:padding="8dp"
+            android:text="@string/play_text"
+            android:textSize="20sp" />
 
-    <com.game.kolas.mygame.views.CustomFontButton
-        android:textSize="20sp"
-        android:onClick="onClick"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="@string/exit_text"
-        android:id="@+id/button_exit"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/butt_selt"
-        android:layout_marginBottom="5dp" />
+        <com.game.kolas.mygame.views.CustomFontButton
+            android:id="@+id/button_settings"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/butt_selt"
+            android:onClick="onClick"
+            android:padding="8dp"
+            android:text="@string/settings_text"
+            android:textSize="20sp" />
+
+        <com.game.kolas.mygame.views.CustomFontButton
+            android:id="@+id/button_about"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/butt_selt"
+            android:onClick="onClick"
+            android:padding="8dp"
+            android:text="@string/about_text"
+            android:textSize="20sp" />
+
+        <com.game.kolas.mygame.views.CustomFontButton
+            android:id="@+id/button_exit"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/butt_selt"
+            android:onClick="onClick"
+            android:padding="8dp"
+            android:text="@string/exit_text"
+            android:textSize="20sp" />
+    </GridLayout>
+
+
+
 
 </LinearLayout>

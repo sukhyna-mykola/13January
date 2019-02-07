@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 26
     buildToolsVersion "24.0.1"
 
     defaultConfig {
-        applicationId "com.game.kolas.mygame"
+        applicationId "com.sms.gate"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 26
         versionCode 1
         versionName "2.0"
     }

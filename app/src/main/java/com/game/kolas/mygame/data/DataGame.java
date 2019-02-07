@@ -25,15 +25,20 @@ public class DataGame {
 
     static {
         dialogs.put("Cтояти гівнюк", "Відчепись");
-        dialogs.put("Тобi капець", "Iди в *опу");
+        dialogs.put("Тобi капець", "Iди в ср*ку");
         dialogs.put("Стій скотиняка", "Дідька лисого");
+        dialogs.put("Дам по макітрі", "Наздожени спочатку");
+        dialogs.put("Ти, гімно", "Відстань");
+        dialogs.put("От падлюка", "Йди до бісової матері");
+        dialogs.put(" Шмаркач ", "Стара кляча");
+        dialogs.put("Сто чортів в печінку", "Iди в ср*ку");
     }
 
     public static void updateDialogs(){
         dialogs.clear();
         dialogs.put("Cтiй уїбень", " Отїбись ");
         dialogs.put("Тобi пизда", "Iди нахуй");
-        dialogs.put("Віддай ворота, сука", "   Соси   ");
+        dialogs.put("Віддай ворота, сука", " Хуя ");
         dialogs.put("Щас захуярю", "Іди в пізду");
 
     }

@@ -36,8 +36,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         this.model = model;
         p = new Paint();
         p.setTextAlign(Paint.Align.CENTER);
-        //p.setTypeface(Typeface.createFromAsset(gameActivity.getAssets(), "fonts/myFont.ttf"));
-        p.setTypeface(Typeface.MONOSPACE);
+        p.setTypeface(Typeface.createFromAsset(gameActivity.getAssets(), "fonts/myFont.ttf"));
+       // p.setTypeface(Typeface.MONOSPACE);
+        p.setAntiAlias(true);
 
         getHolder().addCallback(this);
 

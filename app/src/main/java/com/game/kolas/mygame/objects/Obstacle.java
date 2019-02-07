@@ -18,12 +18,11 @@ public class Obstacle extends GameObject {
     private Random rand = new Random();
 
 
-
     public Obstacle(Bitmap res, float speed, boolean b) {
         this.isBonus = b;
         this.image = res;
         this.speed = speed;
-        this.height = 30;
+        this.height = res.getHeight();
         this.x = 1000;
         this.visibility = true;
 

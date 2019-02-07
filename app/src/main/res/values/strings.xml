@@ -13,7 +13,9 @@
     <string name="repeat_game">Грати знову</string>
     <string name="menu_text">Головне меню</string>
     <string name="select_level_text">Вибiр рiвня</string>
-    <string name="about_content_text">Гра \'\'13 ciчня\'\'(v2) \n Дiя вiдбувається в нiч з 13 на 14 сiчня в селі Єрки ...\n створено: 11.01.2016 \n оновлено: 23.01.2017 \n Фонова музика : серiал \'\'Cвати 5\'\'</string>
+    <string name="about_content_text">Гра \'\'13 ciчня\'\'(v2) \n Дiя вiдбувається в нiч з 13 на 14 сiчня в селі Єрки ...\n створено: 11.01.2016 \n оновлено: 23.01.2017 \n Фонова музика : серiал \'\'Cвати 5\'\' \n Фрази - https://coma.in.ua/23611</string>
     <string name="mode_turn_on">Режим ввiмкнено</string>
     <string name="faled_password_text">Пароль невiрний</string>
+    <string name="levels_complete">Всі рівні пройдено</string>
+    <string name="open_level">Вiдкрито рiвень %1$d </string>
 </resources>

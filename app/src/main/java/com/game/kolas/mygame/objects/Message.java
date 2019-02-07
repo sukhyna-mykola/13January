@@ -51,6 +51,7 @@ public class Message extends GameObject {
         p.setColor(Color.BLACK);
         p.setTextSize(10);
 
+
         while (p.measureText(text)<(width-shiftX-35))
             p.setTextSize((float) (p.getTextSize()+0.5));
 

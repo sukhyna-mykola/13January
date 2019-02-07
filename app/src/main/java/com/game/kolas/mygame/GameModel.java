@@ -33,6 +33,7 @@ import static java.lang.Thread.sleep;
 
 public class GameModel {
 
+
     private ArrayList<Obstacle> obstacles;
     private ArrayList<Obstacle> bonuses;
     private ArrayList<Snowball> snowballs;
@@ -203,7 +204,6 @@ public class GameModel {
         nextBonusTime = 0;
         countSnowbolls = 0;
 
-        adversary.setEnergy(3);
     }
 
     public ArrayList<Obstacle> getBonuses() {
@@ -336,11 +336,11 @@ public class GameModel {
             if (level + 1 != levels.size()) {
                 if (!levels.get(level + 1).isOpen()) {
                     newLevel.setVisibility(true);
-                    newLevel.setText("Вiдкрито рiвень " + (level + 2));
+                    newLevel.setText(context.getString(R.string.open_level, (level + 2)));
                 }
             } else {
                 newLevel.setVisibility(true);
-                newLevel.setText("Всі рівні пройдено");
+                newLevel.setText(context.getString(R.string.levels_complete));
             }
             //якщо суперник зник з екрану
             if (adversary.getX() + adversary.getWidth() < 0) {

@@ -44,6 +44,7 @@ public  class DialogPause extends DialogFragment implements View.OnClickListener
 
         AlertDialog dialog = new AlertDialog.Builder(getContext()).setView(v).create();
         dialog.setCanceledOnTouchOutside(false);
+        setCancelable(false);
         return dialog;
 
     }
